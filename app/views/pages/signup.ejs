@@ -30,13 +30,31 @@
             </div>
             <hr>
             <div class="row form-group">
-              <div class="col-lg-6">
-                <label>First Name</label>
+              <div class="col-6">
+                <label>First name</label>
                 <input type="text" class="form-control" name="firstname" required>
               </div>
-              <div class="col-lg-6">
-                <label>Last Name</label>
+              <div class="col-6">
+                <label>Last name</label>
                 <input type="text" class="form-control" name="lastname" required>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <label>Recipient name</label>
+                <input type="text" class="form-control" name="recipientname" required>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <label>Recipient wallet address (Length: 36)</label>
+                <input type="text" class="form-control" name="recipientwalletaddress" pattern=".{36}" placeholder="0xUHBEK37JHGYIJ" required>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <label>Phone (optional)</label>
+                <input type="text" class="form-control" name="phone">
               </div>
             </div>
             <button type="submit" class="btn btn-success">Signup</button>

@@ -11,7 +11,7 @@ module.exports = function(passport, user) {
 
   // used to deserialize the user
   passport.deserializeUser(function(id, done) {
-    User.findById(id).then(function(user) {
+    User.findByPk(id).then(function(user) {
       if (user) {
         done(null, user.get());
       } else {
@@ -41,6 +41,10 @@ module.exports = function(passport, user) {
           password: userPassword,
           first_name: req.body.firstname,
           last_name: req.body.lastname,
+          access_token: 'RANDOM_TOKEN_NOW',
+          recipient_name: req.body.recipientname,
+          recipient_wallet_address: req.body.recipientwalletaddress,
+          phone: req.body.phone
         };
 
         User.create(data).then(function(newUser, created) {
