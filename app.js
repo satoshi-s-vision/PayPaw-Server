@@ -83,7 +83,7 @@ require('./app/routes/auth_routes.js')(app, passport);
 
 // load messages API v1.0
 require('./app/routes/v1_0/messages_routes.js')(app);
-
+require('./app/routes/v1_0/bills_routes.js')(app);
 
 /**
  *  database
@@ -96,7 +96,7 @@ models.sequelize.sync().then(function() {
 
 
 /**
- *  home page
+ *  Home page
  */
 app.get('/', function(req, res) {
   // if user is auth in the session, carry on
