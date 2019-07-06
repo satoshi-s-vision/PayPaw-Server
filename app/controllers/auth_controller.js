@@ -19,6 +19,12 @@ module.exports.login = function(req, res) {
   );
 };
 
+module.exports.dashboard = function(req, res) {
+  res.render('pages/dashboard', {
+    user: req.user,
+  });
+};
+
 module.exports.logout = function(req, res) {
   req.session.destroy(function(err) {
     res.redirect('/');

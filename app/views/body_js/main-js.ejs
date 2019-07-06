@@ -5,6 +5,20 @@
 
 <!-- Optional JavaScript -->
 <script type="text/javascript">
+$(function() {
+  var pathname = $(location).attr('pathname');
+  switch (pathname) {
+    case '/':
+      $('#page_home').addClass('active');
+      break;
+    case '/dashboard':
+      $('#page_dashboard').addClass('active');
+      break;
+    default:
+      $('#page_home').addClass('active');
+      break;
+  }
+});
 
 class HelperToolsClass {
     constructor() {

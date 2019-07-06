@@ -17,6 +17,9 @@ module.exports = function(app, passport) {
     failureFlash: true,
   }));
 
+  // --------- dashboard ---------
+  app.get('/dashboard', authController.dashboard);
+
   // --------- logout ---------
   app.get('/logout', authController.logout);
 };
