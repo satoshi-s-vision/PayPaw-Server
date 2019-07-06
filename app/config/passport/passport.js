@@ -41,7 +41,7 @@ module.exports = function(passport, user) {
           password: userPassword,
           first_name: req.body.firstname,
           last_name: req.body.lastname,
-          access_token: 'RANDOM_TOKEN_NOW',
+          access_token: 'RANDOM_TOKEN_NOW' + Math.random(),
           recipient_name: req.body.recipientname,
           recipient_wallet_address: req.body.recipientwalletaddress,
           phone: req.body.phone

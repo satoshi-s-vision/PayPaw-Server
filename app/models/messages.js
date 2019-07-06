@@ -4,7 +4,7 @@ module.exports = function(sequelize, DataTypes) {
     id: { autoIncrement: true, primaryKey: true, type: DataTypes.INTEGER },
     user_id: { type: DataTypes.INTEGER, allowNull: false },
     content: { type: DataTypes.TEXT },
-    palindrome: { type: DataTypes.BOOLEAN, allowNull: true },
+    palindrome: { type: DataTypes.INTEGER(1), allowNull: true },
     status: { type: DataTypes.INTEGER(2), defaultValue: 1 },
     createdAt: { type: DataTypes.DATE },
     updatedAt: { type: DataTypes.DATE }
