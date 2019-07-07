@@ -23,7 +23,7 @@
         }
       </script>
       <span class="form-inline" style="color: white;">Welcome!&nbsp;<a style="color: aqua;"><%= user.first_name %> <%= user.last_name %></a></span>
-      <a href="/logout" class="nav-link nav-login-signup"><i class="fa fa-users" aria-hidden="true"></i> Logout</a>
+      <a href="/logout" class="nav-link nav-login-signup"><i class="fas fa-sign-out-alt"></i></i> Logout</a>
       <% } else { %>
       <!-- user not logged in  -->
       <script type="text/javascript">
@@ -31,8 +31,8 @@
           window.sessionStorage.removeItem('restapi_user_id');
         }
       </script>
-      <a href="/login" class="nav-link nav-login-signup"><i class="fa fa-user-circle-o" aria-hidden="true"></i>&nbsp;Login</a>
-      <a href="/signup" class="nav-link btn btn-outline-success nav-login-signup"><i class="fa fa-users" aria-hidden="true"></i>&nbsp;Sign Up</a>
+      <a href="/login" class="nav-link nav-login-signup"><i class="fas fa-sign-in-alt"></i>&nbsp;Login</a>
+      <a href="/signup" class="nav-link btn btn-outline-success nav-login-signup"><i class="fas fa-user-plus"></i>&nbsp;Sign Up</a>
       <% } %>
     </div>
   </div>

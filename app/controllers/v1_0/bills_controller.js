@@ -81,21 +81,27 @@ exports.getAllBills = function(req, res) {
 exports.postBill = function(req, res) {
   const Bills = models.Bills;
 
-  console.log(req.body)
   if (req.body && req.body.data) {
-    let bill = req.body.data
+    const bill = req.body.data
+    const DEFAULT = {
+      asset_id: 1,
+      asset_amount: bill.currency_amount,
+      address: 'pending',
+      status: 0
+    }
+
     Bills.create({
       user_id: bill.user_id,
       email: bill.email,
       currency: bill.currency,
       currency_amount: bill.currency_amount,
-      address: bill.address,
-      asset_id: bill.asset_id,
-      asset_amount: bill.asset_amount,
-      status: 0,
+      address: DEFAULT.address,
+      asset_id: DEFAULT.asset_id,
+      asset_amount: DEFAULT.asset_amount,
+      status: DEFAULT.status,
     }).then( (data) => {
       // OK, created
-      helper.okResp(res, 201, 'Created', data);
+      helper.okResp(res, 200, 'Created', data);
     }).catch( (err) => {
       console.log(err);
       // Error

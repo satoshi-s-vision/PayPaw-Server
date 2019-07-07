@@ -1,0 +1,60 @@
+<div class="container">
+  <div class="row">
+    <div class="col"></div>
+    <div class="col-lg-6">
+      <br>
+      <h2><span style="color: Dodgerblue;"><i class="fas fa-money-check-alt"></i></span></i> Accept BTM/USD online</h2>
+      <hr>
+
+      <form>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text checkout-input-label">Email</span>
+          </div>
+          <input type="email" class="form-control" id="checkoutEmail" placeholder="name@example.com (Your email for invoice)">
+        </div>
+        <div class="form-group">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text checkout-input-label" for="inputGroupSelect01">Currency</label>
+            </div>
+            <select class="custom-select" id="checkoutCurrency">
+              <option value="BTM" selected>BTM</option>
+              <option value="USD">USD</option>
+              <option value="CAD">CAD</option>
+              <option value="CNY">CNY</option>
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text checkout-input-label">Amount</span>
+          </div>
+          <input type="text" class="form-control" aria-label="Amount">
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">Message to recipient</label>
+          <textarea class="form-control" id="checkoutMessage" rows="3"></textarea>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text checkout-input-label">Recipient ID</span>
+          </div>
+          <input type="text" class="form-control" aria-label="Amount">
+        </div>
+      </form>
+
+      <button type="submit" class="btn btn-primary">Pay now</button>
+
+    </div>
+    <div class="col"></div>
+  </div>
+</div>
+<style>
+
+.checkout-input-label {
+  width: 110px;
+}
+
+</style>
