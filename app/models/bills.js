@@ -9,6 +9,7 @@ module.exports = function(sequelize, DataTypes) {
     address: { type: DataTypes.STRING(64), allowNull: false },
     asset_id: { type: DataTypes.INTEGER(11), allowNull: false },
     asset_amount: { type: DataTypes.INTEGER(11), allowNull: false },
+    message: { type: DataTypes.STRING(1024), allowNull: true },
     status: { type: DataTypes.INTEGER(1), allowNull: false },
   }, {
     charset: 'utf8mb4'

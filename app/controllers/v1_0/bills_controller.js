@@ -82,6 +82,8 @@ exports.postBill = function(req, res) {
   const Bills = models.Bills;
 
   if (req.body && req.body.data) {
+    console.log(req.body)
+
     const bill = req.body.data
     const DEFAULT = {
       asset_id: 1,
@@ -95,13 +97,14 @@ exports.postBill = function(req, res) {
       email: bill.email,
       currency: bill.currency,
       currency_amount: bill.currency_amount,
+      message: bill.message,
       address: DEFAULT.address,
       asset_id: DEFAULT.asset_id,
       asset_amount: DEFAULT.asset_amount,
       status: DEFAULT.status,
     }).then( (data) => {
       // OK, created
-      helper.okResp(res, 200, 'Created', data);
+      helper.okResp(res, 201, 'Created', data);
     }).catch( (err) => {
       console.log(err);
       // Error

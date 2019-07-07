@@ -1,60 +1,142 @@
 <div class="container">
-  <div class="row">
+  <div class="row" id="input_box">
     <div class="col"></div>
     <div class="col-lg-6">
       <br>
       <h2><span style="color: Dodgerblue;"><i class="fas fa-money-check-alt"></i></span></i> Accept BTM/USD online</h2>
       <hr>
 
-      <form>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text checkout-input-label">Email</span>
+        </div>
+        <input type="email" class="form-control" id="checkoutEmail" placeholder="name@example.com (Your email for invoice)">
+      </div>
+      <div class="form-group">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text checkout-input-label">Email</span>
+            <label class="input-group-text checkout-input-label" for="inputGroupSelect01">Currency</label>
           </div>
-          <input type="email" class="form-control" id="checkoutEmail" placeholder="name@example.com (Your email for invoice)">
+          <select class="custom-select" id="checkoutCurrency">
+            <option value="BTM" selected>BTM</option>
+            <option value="USD">USD</option>
+            <option value="CAD">CAD</option>
+            <option value="CNY">CNY</option>
+            <option value="EUR">EUR</option>
+          </select>
         </div>
-        <div class="form-group">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <label class="input-group-text checkout-input-label" for="inputGroupSelect01">Currency</label>
-            </div>
-            <select class="custom-select" id="checkoutCurrency">
-              <option value="BTM" selected>BTM</option>
-              <option value="USD">USD</option>
-              <option value="CAD">CAD</option>
-              <option value="CNY">CNY</option>
-              <option value="EUR">EUR</option>
-            </select>
-          </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text checkout-input-label">Amount</span>
         </div>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text checkout-input-label">Amount</span>
-          </div>
-          <input type="text" class="form-control" aria-label="Amount">
+        <input type="text" class="form-control" id="checkoutAmount" aria-label="Amount">
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlTextarea1">Message to recipient</label>
+        <textarea class="form-control" id="checkoutMessage" rows="3"></textarea>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text checkout-input-label">Recipient ID</span>
         </div>
-        <div class="form-group">
-          <label for="exampleFormControlTextarea1">Message to recipient</label>
-          <textarea class="form-control" id="checkoutMessage" rows="3"></textarea>
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text checkout-input-label">Recipient ID</span>
-          </div>
-          <input type="text" class="form-control" aria-label="Amount">
-        </div>
-      </form>
+        <input type="text" class="form-control" id="checkoutRecipientId" aria-label="Recipient ID<">
+      </div>
 
-      <button type="submit" class="btn btn-primary">Pay now</button>
+      <button type="submit" class="btn btn-primary" data-action="postBill">Pay now</button>
 
     </div>
     <div class="col"></div>
   </div>
 </div>
-<style>
 
+<style>
 .checkout-input-label {
   width: 110px;
 }
-
 </style>
+
+<script type="text/javascript">
+$(function() {
+
+  const escapeTags = Object.assign(HelperToolsClass.escapeTags);
+  const btnDebounce = Object.assign(HelperToolsClass.btnDebounce);
+
+  // -------------- Events delegation -------------
+  /**
+   * Events delegation
+   */
+  class InputBox {
+
+    constructor(elem) {
+      this._elem = elem;
+      elem.onclick = this.onClick.bind(this); // (*)
+    }
+
+    // getMessages() {
+    //   getMessagesAjax();
+    // }
+
+    postBill() {
+      postOneBill();
+    }
+
+    onClick(event) {
+      let action = event.target.dataset.action;
+      if (action) {
+        btnDebounce(event.target);
+        this[action]();
+      }
+    }
+  }
+  new InputBox(input_box);
+
+  /**
+   * Ajax, call server to post one msg
+   */
+  async function postOneBill() {
+    const checkoutRecipientId = document.querySelector('#checkoutRecipientId') && +document.querySelector('#checkoutRecipientId').value;
+    const checkoutEmail = document.querySelector('#checkoutEmail') && document.querySelector('#checkoutEmail').value;
+    const checkoutCurrency = document.querySelector('#checkoutCurrency') && document.querySelector('#checkoutCurrency').value;
+    const checkoutAmount = document.querySelector('#checkoutAmount') && document.querySelector('#checkoutAmount').value;
+    const checkoutMessage = document.querySelector('#checkoutMessage') && document.querySelector('#checkoutMessage').value;
+
+
+    if (checkoutRecipientId && checkoutEmail && checkoutCurrency && checkoutAmount) {
+      const res = await fetch(
+        '/api/v1/bill',
+        {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            "data": {
+              "user_id": checkoutRecipientId,
+              "email": checkoutEmail,
+              "currency": checkoutCurrency,
+              "currency_amount": checkoutAmount,
+              "message": checkoutMessage
+            }
+          })
+        }
+      ).then(response => response.json());
+      console.log(res);
+      if (res && res.meta && res.meta.code && res.meta.code == 201) {
+        // reset
+        document.querySelector('#checkoutEmail').value = '';
+        document.querySelector('#checkoutRecipientId').value = '';
+        document.querySelector('#checkoutAmount').value = '';
+        document.querySelector('#checkoutMessage').value = '';
+
+      } else {
+        alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
+      }
+    } else {
+      alert('Input not valid, check your input');
+    }
+  }
+
+});
+</script>
