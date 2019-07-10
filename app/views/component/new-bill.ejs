@@ -1,52 +1,65 @@
 <div class="container">
-  <div class="row" id="input_box">
-    <div class="col"></div>
-    <div class="col-lg-6">
+  <div class="form-row">
+    <div class="col-md">
       <br>
       <h2><span style="color: Dodgerblue;"><i class="fas fa-money-check-alt"></i></span></i> Accept BTM/USD online</h2>
       <hr>
-
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text checkout-input-label">Email</span>
-        </div>
-        <input type="email" class="form-control" id="checkoutEmail" placeholder="name@example.com (Your email for invoice)">
-      </div>
-      <div class="form-group">
+      <form class="needs-validation" novalidate>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <label class="input-group-text checkout-input-label" for="inputGroupSelect01">Currency</label>
+            <span class="input-group-text checkout-input-label">Email</span>
           </div>
-          <select class="custom-select" id="checkoutCurrency">
-            <option value="BTM" selected>BTM</option>
-            <option value="USD">USD</option>
-            <option value="CAD">CAD</option>
-            <option value="CNY">CNY</option>
-            <option value="EUR">EUR</option>
-          </select>
+          <input type="email" class="form-control" id="checkoutEmail" placeholder="name@example.com (Your email for invoice)" required>
         </div>
-      </div>
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text checkout-input-label">Amount</span>
+        <div class="form-group">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text checkout-input-label" for="inputGroupSelect01">Currency</label>
+            </div>
+            <select class="custom-select" id="checkoutCurrency" required>
+              <option value="BTM" selected>BTM</option>
+              <option value="USD">USD</option>
+              <option value="CAD">CAD</option>
+              <option value="CNY">CNY</option>
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
         </div>
-        <input type="text" class="form-control" id="checkoutAmount" aria-label="Amount">
-      </div>
-      <div class="form-group">
-        <label for="exampleFormControlTextarea1">Message to recipient</label>
-        <textarea class="form-control" id="checkoutMessage" rows="3"></textarea>
-      </div>
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text checkout-input-label">Recipient ID</span>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text checkout-input-label">Amount</span>
+          </div>
+          <input type="text" class="form-control" id="checkoutAmount" aria-label="Amount" placeholder="666.66" required>
+          <div class="invalid-feedback">
+            Please provide amount.
+          </div>
         </div>
-        <input type="text" class="form-control" id="checkoutRecipientId" aria-label="Recipient ID<">
-      </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text checkout-input-label">Recipient ID</span>
+          </div>
+          <input type="text" class="form-control" id="checkoutRecipientId" aria-label="Recipient ID" placeholder="175" required>
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">Message to recipient</label>
+          <textarea class="form-control" id="checkoutMessage" rows="3"></textarea>
+        </div>
 
-      <button type="submit" class="btn btn-primary" data-action="postBill">Pay now</button>
-
+        <button type="submit" class="btn btn-primary">Pay now</button>
+      </form>
     </div>
-    <div class="col"></div>
+    <div class="col-md">
+        <div>Pay xxxx BTM</div>
+
+        <div>Waiting for payment</div>
+
+        <div id="qrcode"></div>
+
+        <button type="button" class="el-button copy-address el-button--default">
+        <span>Copy Address</span>
+        </button></div><div class="el-row"><div style="margin-top: 10px;">
+      </div>
+    </div>
   </div>
 </div>
 
@@ -59,37 +72,30 @@
 <script type="text/javascript">
 $(function() {
 
-  const escapeTags = Object.assign(HelperToolsClass.escapeTags);
-  const btnDebounce = Object.assign(HelperToolsClass.btnDebounce);
+  let qrcode = new QRCode(document.getElementById("qrcode"), {
+      text: "N/A",
+      width: 200,
+      height: 200,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+  });
 
-  // -------------- Events delegation -------------
-  /**
-   * Events delegation
-   */
-  class InputBox {
-
-    constructor(elem) {
-      this._elem = elem;
-      elem.onclick = this.onClick.bind(this); // (*)
-    }
-
-    // getMessages() {
-    //   getMessagesAjax();
-    // }
-
-    postBill() {
-      postOneBill();
-    }
-
-    onClick(event) {
-      let action = event.target.dataset.action;
-      if (action) {
-        btnDebounce(event.target);
-        this[action]();
-      }
-    }
-  }
-  new InputBox(input_box);
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    let forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    let validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === true) {
+          postOneBill();
+        }
+        form.classList.add('was-validated');
+        event.preventDefault();
+        event.stopPropagation();
+      }, false);
+    });
+  }, false);
 
   /**
    * Ajax, call server to post one msg
@@ -130,12 +136,27 @@ $(function() {
         document.querySelector('#checkoutAmount').value = '';
         document.querySelector('#checkoutMessage').value = '';
 
+        document.getElementsByClassName('needs-validation')[0].classList.remove('was-validated');
+
+        updateQR(res.data);
+
       } else {
         alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
       }
     } else {
       alert('Input not valid, check your input');
     }
+  }
+
+  function updateQR (data) {
+    // bytom:[address]?amount=[amount]&asset=[asset]
+    const q_data = {
+      address: data.address,
+      amount: +data.asset_amount,
+      asset: data.asset_id,
+    }
+    qrcode.hidden = true;
+    qrcode.makeCode(`bytom:${q_data.address}?amount=${q_data.amount}&asset=${q_data.asset}`); // make another code.
   }
 
 });
