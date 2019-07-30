@@ -8,6 +8,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -36,6 +37,8 @@ if (process.env.NODE_ENV == undefined) {
 ================================================
 ` );
 }
+
+app.use(cors())
 
 // log request to console
 app.use(morgan('tiny'));

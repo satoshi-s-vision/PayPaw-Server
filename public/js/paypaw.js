@@ -24,11 +24,8 @@ PayPaw.prototype.render = function (bill = {}) {
 
   this.template = '<div id="paypaw">' + ' <div class="class"></div>';
   document.body.innerHTML += this.template;
-  // Change element styling
   document.getElementById("paypaw").style.display = "none";
-  // Modify element attributes
   document.getElementById("paypaw").src = "";
-  // Add listeners to elements
   document.getElementById("paypaw").addEventListener("click", this.function);
 
   let qrcode = new QRCode(document.getElementById("qrcode"), {
@@ -40,6 +37,65 @@ PayPaw.prototype.render = function (bill = {}) {
     correctLevel : QRCode.CorrectLevel.H
   });
 
+  postOneBill(bill)
+  /**
+   * Ajax, call server to post one msg
+   */
+  async function postOneBill(b) {
+    const checkoutRecipientId = b.user_id;
+    const checkoutEmail = b.email;
+    const checkoutCurrency = b.currency;
+    const checkoutAmount = b.currency_amount;
+    const checkoutMessage = b.message;
+
+    if (checkoutRecipientId && checkoutEmail && checkoutCurrency && checkoutAmount) {
+
+      const data = JSON.stringify({
+        "data": {
+          "user_id": checkoutRecipientId,
+          "email": checkoutEmail,
+          "currency": checkoutCurrency,
+          "currency_amount": checkoutAmount,
+          "message": checkoutMessage
+        }
+      })
+
+      const requestURL = `http://localhost:3000/api/v1/bill`
+
+      const res = await fetch(
+        requestURL,
+        {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: data
+        }
+      ).then(response => response.json());
+
+      console.log(res);
+
+      if (res && res.meta && res.meta.code && res.meta.code == 201) {
+        updateQR(res.data);
+      } else {
+        alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
+      }
+    } else {
+      alert('Input not valid, check your input');
+    }
+  }
+
+  function updateQR(data) {
+    // bytom:[address]?amount=[amount]&asset=[asset]
+    const q_data = {
+      address: data.address,
+      amount: +data.asset_amount,
+      asset: data.asset_id,
+    }
+    qrcode.hidden = true;
+    qrcode.makeCode(`bytom:${q_data.address}?amount=${q_data.amount}&asset=${q_data.asset}`); // make another code.
+  }
   // Add all your code here
 }
 

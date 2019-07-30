@@ -3,12 +3,15 @@ const helper = require('../../tools/helper_method');
 
 
 module.exports = function(app) {
-  // get messages
+  // get bills
   // app.get('/api/v1/bills', BillsCtrl.getAllBills);
   app.get('/api/v1/bills', isLoggedIn, BillsCtrl.getAllBills);
 
-  // post one message
+  // post one bill
   app.post('/api/v1/bill', BillsCtrl.postBill);
+
+  // using get to post
+  app.get('/api/v1/postbill', BillsCtrl.getPostBill);
 
   /**
    * Check if user logged in.
