@@ -104,7 +104,9 @@ exports.postBill = function(req, res) {
       status: DEFAULT.status,
     }).then( (data) => {
       // OK, created
-      helper.okResp(res, 201, 'Created', data);
+      setTimeout(function () {
+        helper.okResp(res, 201, 'Created', data);
+      }, 1500);
     }).catch( (err) => {
       console.log(err);
       // Error
