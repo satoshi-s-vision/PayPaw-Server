@@ -13,6 +13,7 @@ function PayPaw() {}
 const payPaw = new PayPaw()
 
 PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
+  let alreadyCalled = false;
 
   // {
   //   "user_id": 123456,
@@ -25,18 +26,19 @@ PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
   console.log(JSON.stringify(b))
 
   this.template =
-    '<div>' +
-      `<button id="paypaw" type="button" class="btn btn-primary">Pay ${b.currency_amount} BTM</button>` +
-      '<div class="col-md">' +
-        '<div>Waiting for payment</div>' +
-        '<div id="qrcode"></div>' +
-        '<button type="button" class="el-button copy-address el-button--default">' +
-          '<span>Copy Address</span>' +
-        '</button>' +
-      '</div>' +
-    '</div>';
+    `<div class="container-fluid" style="margin-top: 15vh;">` +
+      `<div id="pp-checkout" class="d-block">` +
+        `<button id="paypaw" type="button" class="btn"><i class="fas fa-money-bill-alt"></i><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount} BTM</b></button>` +
+        `<div id="paypaw-checkout">` +
+          `<div class="btn" id="paypaw-countdown">` +
+            `<span id="countdown-timer"></span> Waiting for payment</div>` +
+          `<div id="qrcode"></div>` +
+          `<div id="paypaw-checkout-address">bm1q5ygtx5hrqxpu8tjyjsw3vmxjyjtv8hw7sh5xhw</div>` +
+          `<button id="copy-address-btn" type="button" class="btn btn-secondary">COPY ADDRESS</button>` +
+        `</div>` +
+      `</div>` +
+    `</div>`;
 
-  // if
   // document.getElementById("paypaw").nextElementSibling.innerHTML = this.template
   // document.getElementById(paypawBtnId).innerHTML = this.template;
   // document.getElementById(paypawBtnId).insertAdjacentHTML('afterend', this.template);
@@ -58,6 +60,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
    * Ajax, call server to post one msg
    */
   async function postOneBill() {
+    if (alreadyCalled) return;
 
     const checkoutRecipientId = b.user_id;
     const checkoutEmail = b.email;
@@ -95,7 +98,8 @@ PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
 
       if (res && res.meta && res.meta.code && res.meta.code == 201) {
         updateQR(res.data);
-        $('#paypaw-checkout').toggle( "blind" );
+        $('#paypaw-checkout').show();
+        alreadyCalled = true;
       } else {
         alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
       }
