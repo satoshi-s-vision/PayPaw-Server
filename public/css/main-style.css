@@ -1,22 +1,60 @@
-/* top-navbar */
-.nav-login-signup {
-  color: lightgray;
+/* container */
+.paypaw-container {
+  margin-top: 10vh;
 }
-.nav-login-signup:hover {
+
+#pp-checkout {
+  background-color: #eee!important;
+  text-align: center;
+  width: 300px;
+  border-radius: 15px;
+  border: none;
+  display: none;
+  margin: auto;
+}
+
+#paypaw {
+  width: 85%;
+  height: 50px;
+  background: transparent;
+  box-shadow: inset 0 0 0 #ddd;
+}
+
+#paypaw-logo {
+  padding-right: 15px;
+  margin-right: 15px;
+  border-right: 2px solid #ccc;
+  color: #ea9b08;
+}
+
+/* inner */
+#paypaw-checkout {
+  display: none;
+  margin: auto;
+  width: 250px;
+  border-radius: 15px;
+  background: white;
+}
+
+#paypaw-countdown {
+  width: 100%;
+  border-radius: 15px 15px 0 0;
+  font-size: 15px;
+  background: #7CCA7D;
   color: white;
 }
-/**
- *  messages component
- */
-.user-msgs-container {
-  margin-top: 15px;
-  border-radius: 5px;
-  border: 2px solid black;
+
+#qrcode img {
+  margin: 15px auto 10px auto;
 }
-.user-msgs-container .msgs-box {
-  border-radius: 5px;
-  margin: 10px;
-  padding: 10px;
-  overflow: scroll;
-  height: calc(100vh - 275px);
+
+#paypaw-checkout-address {
+  word-break: break-all;
+  font-size: 14px;
+  padding: 0 5px 5px;
+}
+
+#copy-address-btn {
+  width: 100%;
+  border-radius: 0 0 15px 15px;
 }

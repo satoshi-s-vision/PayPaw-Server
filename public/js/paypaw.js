@@ -1,10 +1,10 @@
 // LIBRARY CLASS
 (window.initPayPaw = function() {
-  // loadPackage("http://localhost:3000/js/qrcode.min.js", "js") //dynamically load and add this .js file
-  loadPackage("https://code.jquery.com/jquery-3.2.1.slim.min.js", "js") //dynamically load and add this .js file
-  loadPackage("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js", "js") //dynamically load and add this .js file
-  loadPackage("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js", "js") //dynamically load and add this .js file
-  loadPackage("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css", "css") //dynamically load and add this .css file
+  _loadPackage("http://localhost:3000/css/main-style.css", "css")
+  _loadPackage("https://code.jquery.com/jquery-3.2.1.slim.min.js", "js")
+  _loadPackage("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js", "js")
+  _loadPackage("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js", "js")
+  _loadPackage("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css", "css")
 })();
 
 function PayPaw() {}
@@ -12,39 +12,24 @@ function PayPaw() {}
 // init
 const payPaw = new PayPaw()
 
-PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
+PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
   let alreadyCalled = false;
 
-  // {
-  //   "user_id": 123456,
-  //   "email": "test@g.com",
-  //   "currency": "BTM",
-  //   "currency_amount": 1500,
-  //   "message": "GG GL"
-  // }
-
-  console.log(JSON.stringify(b))
-
-  this.template =
-    `<div class="container-fluid" style="margin-top: 15vh;">` +
+  this.tmp =
+    `<div class="container-fluid paypaw-container">` +
       `<div id="pp-checkout" class="d-block">` +
-        `<button id="paypaw" type="button" class="btn"><i class="fas fa-money-bill-alt"></i><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount} BTM</b></button>` +
+        `<button id="paypaw" type="button" class="btn"><i class="fas fa-money-bill-alt"></i><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount/10**8} BTM</b></button>` +
         `<div id="paypaw-checkout">` +
           `<div class="btn" id="paypaw-countdown">` +
             `<span id="countdown-timer"></span> Waiting for payment</div>` +
           `<div id="qrcode"></div>` +
-          `<div id="paypaw-checkout-address">bm1q5ygtx5hrqxpu8tjyjsw3vmxjyjtv8hw7sh5xhw</div>` +
+          `<div id="paypaw-checkout-address">N/A</div>` +
           `<button id="copy-address-btn" type="button" class="btn btn-secondary">COPY ADDRESS</button>` +
         `</div>` +
       `</div>` +
     `</div>`;
 
-  // document.getElementById("paypaw").nextElementSibling.innerHTML = this.template
-  // document.getElementById(paypawBtnId).innerHTML = this.template;
-  // document.getElementById(paypawBtnId).insertAdjacentHTML('afterend', this.template);
-  // document.getElementById("paypaw").style.display = "none";
-  // document.getElementById("paypaw").src = "";
-
+  document.getElementById(paypawBtn).innerHTML = this.tmp;
   document.getElementById("paypaw").addEventListener("click", postOneBill);
 
   let qrcode = new QRCode(document.getElementById("qrcode"), {
@@ -54,6 +39,43 @@ PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
     colorDark : "#000000",
     colorLight : "#ffffff",
     correctLevel : QRCode.CorrectLevel.H
+  });
+
+  function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+      document.querySelector('#copy-address-btn').textContent = 'Copied!';
+    } catch (err) {
+      alert(`Fallback: Oops, unable to copy ${err}`);
+    }
+    document.body.removeChild(textArea);
+  }
+
+  function copyTextToClipboard(text) {
+    if (!navigator.clipboard) {
+      fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      document.querySelector('#copy-address-btn').textContent = 'Copied!'
+    }, function(err) {
+      alert(`Async: Could not copy text: ${err}`)
+    });
+  }
+
+  let copyBobBtn = document.querySelector('#copy-address-btn');
+
+  copyBobBtn.addEventListener('click', function(event) {
+    copyTextToClipboard(
+      document.querySelector('#paypaw-checkout-address').textContent
+    );
   });
 
   /**
@@ -69,7 +91,6 @@ PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
     const checkoutMessage = b.message;
 
     if (checkoutRecipientId && checkoutEmail && checkoutCurrency && checkoutAmount) {
-
       const data = JSON.stringify({
         "data": {
           "user_id": checkoutRecipientId,
@@ -79,9 +100,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
           "message": checkoutMessage
         }
       })
-
       const requestURL = `http://localhost:3000/api/v1/bill`
-
       const res = await fetch(
         requestURL,
         {
@@ -94,10 +113,11 @@ PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
         }
       ).then(response => response.json());
 
-      console.log(res);
-
       if (res && res.meta && res.meta.code && res.meta.code == 201) {
+        console.log(res.data)
+        countDown(600);
         updateQR(res.data);
+        $('#paypaw-checkout-address').text(res.data.address);
         $('#paypaw-checkout').show();
         alreadyCalled = true;
       } else {
@@ -108,20 +128,38 @@ PayPaw.prototype.render = function (b = {}, paypawBtnId = 'paypaw-btn') {
     }
   }
 
+  function countDown(t) {
+    // Set how many sec we're counting down to
+    let countTime = t;
+
+    // Update the count down every 1 second
+    let x = setInterval(function() {
+      let minutes = Math.floor(countTime / 60);
+      let seconds = Math.floor(countTime % 60);
+      countTime--;
+      if (minutes < 10) minutes = '0' + minutes;
+      if (seconds < 10) seconds = '0' + seconds;
+      document.getElementById("countdown-timer").innerHTML = minutes + ":" + seconds;
+      if (countTime < 0) {
+        clearInterval(x);
+        document.getElementById("paypaw-countdown").innerHTML = "Expired!";
+      }
+    }, 1000);
+  }
+
   function updateQR(data) {
     // bytom:[address]?amount=[amount]&asset=[asset]
     const q_data = {
       address: data.address,
-      amount: +data.asset_amount,
-      asset: data.asset_id,
+      amount: data.asset_amount,
+      asset: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', // TODO - get it from database.
     }
     qrcode.hidden = true;
     qrcode.makeCode(`bytom:${q_data.address}?amount=${q_data.amount}&asset=${q_data.asset}`); // make another code.
   }
-  // Add all your code here
 }
 
-function loadPackage(filename, filetype){
+function _loadPackage(filename, filetype){
   if (filetype=="js"){ //if filename is a external JavaScript file
     var fileref=document.createElement('script')
     fileref.setAttribute("type","text/javascript")

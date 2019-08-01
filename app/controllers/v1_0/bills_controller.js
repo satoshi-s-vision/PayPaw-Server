@@ -82,13 +82,12 @@ exports.postBill = function(req, res) {
   const Bills = models.Bills;
 
   if (req.body && req.body.data) {
-    console.log(req.body)
 
     const bill = req.body.data
     const DEFAULT = {
       asset_id: 1,
       asset_amount: bill.currency_amount,
-      address: 'pending',
+      address: 'bm1qzrqd2ra5qh9xf7wsdk22c06dn9xkjjec0krp0p', // TODO call service to get a new address
       status: 0
     }
 
@@ -106,7 +105,7 @@ exports.postBill = function(req, res) {
       // OK, created
       setTimeout(function () {
         helper.okResp(res, 201, 'Created', data);
-      }, 1500);
+      }, 500);
     }).catch( (err) => {
       console.log(err);
       // Error
