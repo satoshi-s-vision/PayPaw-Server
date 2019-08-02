@@ -3,7 +3,6 @@
 const models = require('../../models');
 const helper = require('../../tools/helper_method');
 
-
 /**
  * Get Bills (option: search terms)
  *
@@ -70,7 +69,6 @@ exports.getAllBills = function(req, res) {
     helper.errResp(res, 404, 'Error: Can not get Bills!');
   });
 };
-
 
 /**
  * Post one bill

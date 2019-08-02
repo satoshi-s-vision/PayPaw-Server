@@ -21,7 +21,6 @@ const flash = require('connect-flash');
 
 const helper = require('./app/tools/helper_method');
 
-
 /* ------------------------------------------- */
 if (process.env.NODE_ENV == undefined) {
   process.env.NODE_ENV = 'development';
@@ -62,19 +61,16 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // flash messages stored in session
 
-
 /**
  *  view
  */
 app.set('view engine', 'ejs');
 app.set('views', './app/views');
 
-
 /**
  *  models
  */
 const models = require('./app/models');
-
 
 /**
  *  routes
@@ -97,7 +93,6 @@ models.sequelize.sync().then(function() {
   console.log(err, 'Something went wrong with the Database Update!');
 });
 
-
 /**
  *  Home page
  */
@@ -115,7 +110,6 @@ app.get('/', function(req, res) {
   }
 });
 
-
 // Route not found (404)
 app.use(function(req, res, next) {
 
@@ -124,12 +118,10 @@ app.use(function(req, res, next) {
 
 });
 
-
 // other error
 app.use(function(err, req, res, next) {
   return helper.errResp(res, 500, `Error 500!! ${err}`);
 });
-
 
 /* Start app --------------------------------- */
 const server = app.listen(port, '0.0.0.0', function() {
@@ -138,4 +130,3 @@ const server = app.listen(port, '0.0.0.0', function() {
 
   console.log(`${process.env.NODE_ENV} running on http://${host}:${port}`);
 });
-

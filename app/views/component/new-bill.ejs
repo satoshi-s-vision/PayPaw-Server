@@ -52,13 +52,8 @@
       </form>
     </div>
     <div class="col-md">
-        <div>Pay xxxx BTM</div>
-        <div>Waiting for payment</div>
-        <div id="qrcode"></div>
-        <button type="button" class="el-button copy-address el-button--default">
-        <button>Copy Address</button>
-        </button></div><div class="el-row"><div style="margin-top: 10px;">
-      </div>
+      <div id='paypaw-btn'></div>
+    </div>
     </div>
   </div>
 </div>
@@ -69,17 +64,9 @@
 }
 </style>
 
+<script src="http://localhost:3000/js/paypaw.js"></script>
 <script type="text/javascript">
 $(function() {
-
-  let qrcode = new QRCode(document.getElementById("qrcode"), {
-      text: "N/A",
-      width: 200,
-      height: 200,
-      colorDark : "#000000",
-      colorLight : "#ffffff",
-      correctLevel : QRCode.CorrectLevel.H
-  });
 
   window.addEventListener('load', function() {
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -88,7 +75,23 @@ $(function() {
     let validation = Array.prototype.filter.call(forms, function(form) {
       form.addEventListener('submit', function(event) {
         if (form.checkValidity() === true) {
-          postOneBill();
+          const checkoutRecipientId = $('#checkoutRecipientId').val();
+          const checkoutEmail = $('#checkoutEmail').val();
+          const checkoutCurrency = $('#checkoutCurrency').val();
+          const checkoutAmount = $('#checkoutAmount').val() * 10**8;
+          const checkoutMessage = $('#checkoutMessage').val();
+
+          if (checkoutRecipientId && checkoutEmail && checkoutCurrency && checkoutAmount) {
+            payPaw.render({
+              "user_id": checkoutRecipientId,
+              "email": checkoutEmail,
+              "currency": checkoutCurrency,
+              "currency_amount": checkoutAmount,
+              "message": checkoutMessage
+            }, 'paypaw-btn');
+
+            resetForm();
+          }
         }
         form.classList.add('was-validated');
         event.preventDefault();
@@ -97,75 +100,14 @@ $(function() {
     });
   }, false);
 
-  /**
-   * Ajax, call server to post one msg
-   */
-  async function postOneBill() {
-    const checkoutRecipientId = document.querySelector('#checkoutRecipientId') && +document.querySelector('#checkoutRecipientId').value;
-    const checkoutEmail = document.querySelector('#checkoutEmail') && document.querySelector('#checkoutEmail').value;
-    const checkoutCurrency = document.querySelector('#checkoutCurrency') && document.querySelector('#checkoutCurrency').value;
-    const checkoutAmount = document.querySelector('#checkoutAmount') && document.querySelector('#checkoutAmount').value;
-    const checkoutMessage = document.querySelector('#checkoutMessage') && document.querySelector('#checkoutMessage').value || 'N/A';
-
-    if (checkoutRecipientId && checkoutEmail && checkoutCurrency && checkoutAmount) {
-
-      const data = JSON.stringify({
-        "data": {
-          "user_id": checkoutRecipientId,
-          "email": checkoutEmail,
-          "currency": checkoutCurrency,
-          "currency_amount": checkoutAmount,
-          "message": checkoutMessage
-        }
-      })
-
-      const requestURL = `http://localhost:3000/api/v1/bill`
-
-      const res = await fetch(
-        requestURL,
-        {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: data
-        }
-      ).then(response => response.json());
-
-      console.log(res);
-
-      if (res && res.meta && res.meta.code && res.meta.code == 201) {
-        // reset
-        resetForm();
-
-        updateQR(res.data);
-      } else {
-        alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
-      }
-    } else {
-      alert('Input not valid, check your input');
-    }
-  }
-
   function resetForm () {
     document.querySelector('#checkoutEmail').value = '';
     document.querySelector('#checkoutRecipientId').value = '';
     document.querySelector('#checkoutAmount').value = '';
     document.querySelector('#checkoutMessage').value = '';
-    document.getElementsByClassName('needs-validation')[0].classList.remove('was-validated');
+    setTimeout(() => {
+      document.getElementsByClassName('needs-validation')[0].classList.remove('was-validated');
+    }, 100);
   }
-
-  function updateQR (data) {
-    // bytom:[address]?amount=[amount]&asset=[asset]
-    const q_data = {
-      address: data.address,
-      amount: +data.asset_amount,
-      asset: data.asset_id,
-    }
-    qrcode.hidden = true;
-    qrcode.makeCode(`bytom:${q_data.address}?amount=${q_data.amount}&asset=${q_data.asset}`); // make another code.
-  }
-
 });
 </script>

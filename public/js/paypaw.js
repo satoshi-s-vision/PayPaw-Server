@@ -18,7 +18,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
   this.tmp =
     `<div class="container-fluid paypaw-container">` +
       `<div id="pp-checkout" class="d-block">` +
-        `<button id="paypaw" type="button" class="btn"><i class="fas fa-money-bill-alt"></i><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount/10**8} BTM</b></button>` +
+        `<button id="paypaw" type="button" class="btn"><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount/10**8} BTM</b></button>` +
         `<div id="paypaw-checkout">` +
           `<div class="btn" id="paypaw-countdown">` +
             `<span id="countdown-timer"></span> Waiting for payment</div>` +
@@ -96,7 +96,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
           "user_id": checkoutRecipientId,
           "email": checkoutEmail,
           "currency": checkoutCurrency,
-          "currency_amount": checkoutAmount,
+          "currency_amount": checkoutAmount / 10**8,
           "message": checkoutMessage
         }
       })
@@ -151,7 +151,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
     // bytom:[address]?amount=[amount]&asset=[asset]
     const q_data = {
       address: data.address,
-      amount: data.asset_amount,
+      amount: data.asset_amount * 10**8,
       asset: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', // TODO - get it from database.
     }
     qrcode.hidden = true;
