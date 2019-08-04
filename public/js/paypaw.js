@@ -1,10 +1,10 @@
 // LIBRARY CLASS
 (window.initPayPaw = function() {
   _loadPackage("http://localhost:3000/css/main-style.css", "css")
-  _loadPackage("https://code.jquery.com/jquery-3.2.1.slim.min.js", "js")
-  _loadPackage("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js", "js")
-  _loadPackage("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js", "js")
-  _loadPackage("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css", "css")
+  _loadPackage("https://code.jquery.com/jquery-3.3.1.slim.min.js", "js")
+  _loadPackage("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js", "js")
+  _loadPackage("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js", "js")
+  _loadPackage("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css", "css")
 })();
 
 function PayPaw() {}
@@ -16,18 +16,18 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
   let alreadyCalled = false;
 
   this.tmp =
-    `<div class="container-fluid paypaw-container">` +
-      `<div id="pp-checkout" class="d-block">` +
-        `<button id="paypaw" type="button" class="btn"><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount/10**8} BTM</b></button>` +
-        `<div id="paypaw-checkout">` +
-          `<div class="btn" id="paypaw-countdown">` +
-            `<span id="countdown-timer"></span> Waiting for payment</div>` +
-          `<div id="qrcode"></div>` +
-          `<div id="paypaw-checkout-address">N/A</div>` +
-          `<button id="copy-address-btn" type="button" class="btn btn-secondary">COPY ADDRESS</button>` +
-        `</div>` +
-      `</div>` +
-    `</div>`;
+    `<div class="container-fluid paypaw-container">
+      <div id="pp-checkout" class="d-block">
+        <button id="paypaw" type="button" class="btn"><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount/10**8} BTM</b></button>
+        <div id="paypaw-checkout">
+          <div class="btn" id="paypaw-countdown">
+            <span id="countdown-timer"></span> Waiting for payment</div>
+          <div id="qrcode"></div>
+          <div id="paypaw-checkout-address">N/A</div>
+          <button id="copy-address-btn" type="button" class="btn btn-secondary">COPY ADDRESS</button>
+        </div>
+      </div>
+    </div>`;
 
   document.getElementById(paypawBtn).innerHTML = this.tmp;
   document.getElementById("paypaw").addEventListener("click", postOneBill);
