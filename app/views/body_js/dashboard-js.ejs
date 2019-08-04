@@ -9,23 +9,117 @@ $(function() {
   function displayBills(bills) {
     let bills_html = '';
     bills.forEach(function(b) {
-      bills_html += `
-        <div class="row">
-          <div class="">
-            <span>${b.User.recipient_name}</span>
-            <br>
-            <span>MID: ${b.User.recipient_wallet_address}</span>
+
+      let [status_name, status_type] = statusName(b.status, b.bill_age)
+
+      let info_html = '';
+      let info_arr = [
+        ['Email', b.email],
+        ['Amount', `${b.currency_amount} ${b.currency}`],
+        ['Created', `${calTimeAgo(b.bill_age)}`],
+      ]
+
+      info_arr.forEach(function(item, index) {
+        let odd = index % 4;
+        let last_item = info_arr.length == (index - 1);
+
+        if (index == 0) info_html += '<div class="row">';
+        else if (!odd) info_html += '</div><div class="row">';
+
+        info_html += `
+          <div class="col col-md-6 col-lg-3">
+            <span class="form-control-plaintext"><b>${item[0]}:</b> ${item[1]}</span>
           </div>
-        </div>`;
+        `;
+
+        if (last_item) info_html += '</div>';
+      })
+
+      bills_html += `
+        <div class="card">
+          <div class="card-header h5">
+            ID: ${b.id} <span class="float-right badge badge-${status_type}">${status_name}</span>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 col-lg-4">
+                <span class="form-control-plaintext"><b>Email:</b> ${b.email}</span>
+              </div>
+              <div class="col-12 col-lg-4">
+                <span class="form-control-plaintext"><b>Amount:</b> ${b.currency_amount} ${b.currency}</span>
+              </div>
+              <div class="col-12 col-lg-4">
+                <span class="form-control-plaintext"><b>Created:</b> ${calTimeAgo(b.bill_age)}</span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <span class="form-control-plaintext"><b>Message:</b> ${b.message}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <br>
+      `;
     });
     $('#bills-box').html(bills_html);
+  }
+
+  function statusName(status = 0, bill_age = 0) {
+    /*
+      Expired: warning
+      Paid:  success
+      Pending: primary
+    */
+    let m = {
+      'Paid': 'success',
+      'Pending': 'primary',
+      'Expired': 'warning',
+    }
+    let res = 'Expired';
+    if (status == 1) {
+      res = 'Paid';
+    } else if (status == 0 && bill_age < 600) {
+      res = 'Pending';
+    }
+    return [res, m[res]]
+  }
+
+  function calTimeAgo (ts) {
+    const diffDays = Math.floor(ts / 86400); // days
+    const diffHrs = Math.floor((ts % 86400) / 3600); // hours
+    const diffMins = Math.round(((ts % 86400) % 3600) / 60); // minutes
+    const diffSecs = Math.round(((ts % 86400) % 3600)); // seconds
+    let res = "N/A";
+    if (diffDays > 0) {
+      if (diffDays == 1) return `one day ago`;
+      else return `${diffDays} days ago`
+    }
+    if (diffHrs > 0) {
+      if (diffHrs == 1) return `an hour ago`;
+      else return `${diffHrs} hours ago`
+    }
+    if (diffMins > 0) {
+      if (diffMins == 1) return `one minute ago`;
+      else return `${diffMins} minutes ago`
+    }
+    if (diffSecs > 0) {
+      if (diffSecs == 1) return `one second ago`;
+      else return `${diffSecs} seconds ago`
+    }
   }
 
   // ------------------ Ajax call -----------------
   /**
    * Ajax, call server to get msg/msgs
    */
-  async function loadBills(limit = 20, offset = 0, order = 'DESC') {
+  async function loadBills(
+    limit = 20,
+    offset = 0,
+    order = 'DESC'
+  ) {
     const params = `order=${order}&limit=${limit}&offset=${offset}`
     const res = await fetch(
       `/api/v1/bills?${params}`,
@@ -39,8 +133,6 @@ $(function() {
       res.data = res.data.length === undefined ? [res.data] : res.data;
 
       displayBills(res.data);
-    } else if (res.meta.total == 0) {
-      alert(`Can't find that message...`);
     } else {
       alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
     }

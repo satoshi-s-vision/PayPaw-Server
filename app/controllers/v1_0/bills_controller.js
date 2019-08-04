@@ -2,6 +2,7 @@
 
 const models = require('../../models');
 const helper = require('../../tools/helper_method');
+const Sequelize = require('sequelize')
 
 /**
  * Get Bills (option: search terms)
@@ -49,7 +50,12 @@ exports.getAllBills = function(req, res) {
       'asset_amount',
       'status',
       'created_at',
+      'message',
       'updated_at',
+      [
+        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), bills.created_at))`),
+        'bill_age'
+      ],
       'User.recipient_name',
       'User.recipient_wallet_address'
     ],
