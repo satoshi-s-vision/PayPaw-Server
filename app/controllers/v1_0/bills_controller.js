@@ -32,11 +32,6 @@ exports.getAllBills = function(req, res) {
                 Number.isInteger(+reqq.offset) &&
                 +reqq.offset > -1 ? +reqq.offset : 0;
 
-  let user_bill_sum = 0;
-  Bills.sum('id').then( (sum) => {
-    user_bill_sum = sum
-  })
-
   // TODO - rate limit (DDOS)
   Bills.findAll({
     offset: rqq.offset,
@@ -72,9 +67,6 @@ exports.getAllBills = function(req, res) {
       attributes: ['recipient_name', 'recipient_wallet_address'],
     }],
   }).then( (resData) => {
-    // console.log(resData[0]);
-
-    // resData['Bills']['dataValues']['user_bill_sum'] = user_bill_sum;
     // OK
     helper.okResp(res, 200, 'ok', resData, rqq);
   }).catch( (err) => {
@@ -118,52 +110,6 @@ exports.postBill = function(req, res) {
       setTimeout(function () {
         helper.okResp(res, 201, 'Created', data);
       }, 500);
-    }).catch( (err) => {
-      console.log(err);
-      // Error
-      helper.errResp(res, 404, 'Error: Can not post your bill!');
-    });
-  } else {
-    helper.errResp(res, 400,
-      'Error: bad request, check your payload or URL!');
-  }
-};
-
-/**
- * Post one bill
- *
- * @param {object} req The request
- * @param {object} res The response
- */
-exports.getPostBill = function(req, res) {
-    // Can easily add search param in the future
-  // requested filter
-  const reqq = req.query || {};
-
-  const Bills = models.Bills;
-
-  if (reqq) {
-    const bill = reqq
-    const DEFAULT = {
-      asset_id: 1,
-      asset_amount: bill.currency_amount,
-      address: 'pending',
-      status: 0
-    }
-
-    Bills.create({
-      user_id: bill.user_id,
-      email: bill.email,
-      currency: bill.currency,
-      currency_amount: bill.currency_amount,
-      message: bill.message,
-      address: DEFAULT.address,
-      asset_id: DEFAULT.asset_id,
-      asset_amount: DEFAULT.asset_amount,
-      status: DEFAULT.status,
-    }).then( (data) => {
-      // OK, created
-      helper.okResp(res, 201, 'Created', data);
     }).catch( (err) => {
       console.log(err);
       // Error

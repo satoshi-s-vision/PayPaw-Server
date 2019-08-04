@@ -8,7 +8,7 @@ exports.okResp = function(
   statusCode,
   msg=null,
   data=null,
-  searchTerm={}
+  searchTerm={},
 ) {
   let total = 0;
   if (data) {

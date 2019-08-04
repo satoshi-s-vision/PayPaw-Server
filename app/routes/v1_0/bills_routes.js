@@ -10,8 +10,6 @@ module.exports = function(app) {
   // post one bill
   app.post('/api/v1/bill', BillsCtrl.postBill);
 
-  // using get to post
-  app.get('/api/v1/postbill', BillsCtrl.getPostBill);
 
   /**
    * Check if user logged in.

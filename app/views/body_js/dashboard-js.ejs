@@ -2,8 +2,26 @@
 <script type="text/javascript">
 $(function() {
 
+  let item_per_page = 5;
+  let current_offset = 0;
+  let current_page = 0;
+
   // run once for page load (init)
-  loadBills();
+  loadBills(item_per_page, current_offset, current_page, 'DESC');
+
+  $('#bills-prev-page').on('click', function () {
+    if (current_page > 0) {
+      current_page--;
+      current_offset = item_per_page * current_page;
+    }
+    loadBills(item_per_page, current_offset, current_page, 'DESC');
+  })
+
+  $('#bills-next-page').on('click', function () {
+    current_page++;
+    current_offset = item_per_page * current_page;
+    loadBills(item_per_page, current_offset, current_page, 'DESC');
+  })
 
   // ------------------ Functions -----------------
   function displayBills(bills) {
@@ -111,6 +129,10 @@ $(function() {
     }
   }
 
+  function updateBillsPageNum () {
+    $('#bills-page-number').text(`Page ${current_page + 1}`);
+  }
+
   // ------------------ Ajax call -----------------
   /**
    * Ajax, call server to get msg/msgs
@@ -118,7 +140,8 @@ $(function() {
   async function loadBills(
     limit = 20,
     offset = 0,
-    order = 'DESC'
+    curr_page = 0,
+    order = 'DESC',
   ) {
     const params = `order=${order}&limit=${limit}&offset=${offset}`
     const res = await fetch(
@@ -133,6 +156,7 @@ $(function() {
       res.data = res.data.length === undefined ? [res.data] : res.data;
 
       displayBills(res.data);
+      updateBillsPageNum(curr_page);
     } else {
       alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
     }
