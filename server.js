@@ -81,7 +81,6 @@ require('./app/config/passport/passport.js')(passport, models.User);
 require('./app/routes/auth_routes.js')(app, passport);
 
 // load messages API v1.0
-require('./app/routes/v1_0/messages_routes.js')(app);
 require('./app/routes/v1_0/bills_routes.js')(app);
 
 /**
