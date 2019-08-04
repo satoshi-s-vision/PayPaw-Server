@@ -24,7 +24,7 @@ module.exports = function(app) {
     if (req.isAuthenticated()) {
       return next();
     } else {
-      helper.okResp(res, 401, 'Unauthorized: login is required');
+      return res.redirect('/login');
     }
   }
 };

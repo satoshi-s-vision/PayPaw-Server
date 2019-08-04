@@ -32,6 +32,11 @@ exports.getAllBills = function(req, res) {
                 Number.isInteger(+reqq.offset) &&
                 +reqq.offset > -1 ? +reqq.offset : 0;
 
+  let user_bill_sum = 0;
+  Bills.sum('id').then( (sum) => {
+    user_bill_sum = sum
+  })
+
   // TODO - rate limit (DDOS)
   Bills.findAll({
     offset: rqq.offset,
@@ -67,6 +72,9 @@ exports.getAllBills = function(req, res) {
       attributes: ['recipient_name', 'recipient_wallet_address'],
     }],
   }).then( (resData) => {
+    // console.log(resData[0]);
+
+    // resData['Bills']['dataValues']['user_bill_sum'] = user_bill_sum;
     // OK
     helper.okResp(res, 200, 'ok', resData, rqq);
   }).catch( (err) => {

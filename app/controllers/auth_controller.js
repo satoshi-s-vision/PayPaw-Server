@@ -20,6 +20,7 @@ module.exports.login = function(req, res) {
 };
 
 module.exports.dashboard = function(req, res) {
+  if (!req.user) return res.redirect('/login');
   res.render('pages/dashboard', {
     user: req.user,
   });
