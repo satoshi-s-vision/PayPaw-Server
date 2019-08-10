@@ -77,6 +77,61 @@ exports.getAllBills = function(req, res) {
 };
 
 /**
+ * Get one bill
+ *
+ * @param {object} req The request
+ * @param {object} res The response
+ */
+exports.getOneBill = function(req, res) {
+  const Bills = models.Bills;
+
+  let bill_id = req.query.id;
+
+  // TODO - rate limit (DDOS)
+  Bills.findOne({
+    offset: rqq.offset,
+    limit: rqq.limit,
+    order: [
+      ['id', rqq.order],
+    ],
+    attributes: [
+      'id',
+      'user_id',
+      'email',
+      'currency',
+      'currency_amount',
+      'address',
+      'asset_id',
+      'asset_amount',
+      'status',
+      'created_at',
+      'message',
+      'updated_at',
+      [
+        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), bills.created_at))`),
+        'bill_age'
+      ],
+      'User.recipient_name',
+      'User.recipient_wallet_address'
+    ],
+    where: {
+      user_id: req.user.id,
+    },
+    include: [{
+      model: models.User,
+      attributes: ['recipient_name', 'recipient_wallet_address'],
+    }],
+  }).then( (resData) => {
+    // OK
+    helper.okResp(res, 200, 'ok', resData, rqq);
+  }).catch( (err) => {
+    console.log(err);
+    // Error
+    helper.errResp(res, 404, 'Error: Can not get Bills!');
+  });
+};
+
+/**
  * Post one bill
  *
  * @param {object} req The request
@@ -84,6 +139,14 @@ exports.getAllBills = function(req, res) {
  */
 exports.postBill = function(req, res) {
   const Bills = models.Bills;
+
+  function setBillAsPaid(bill_id) {
+    Bills.update({
+      status: 1,
+    }, {
+      where: { id: bill_id }
+    });
+  }
 
   if (req.body && req.body.data && res.locals.newAddress) {
 
@@ -108,8 +171,13 @@ exports.postBill = function(req, res) {
     }).then( (data) => {
       // OK, created
       helper.okResp(res, 201, 'Created', data);
+
+      // TODO - remove - mock payment
+      setTimeout(function () {
+        setBillAsPaid(data.id);
+      }, 3000);
+
     }).catch( (err) => {
-      console.log(err);
       // Error
       helper.errResp(res, 404, 'Error: Can not post your bill!');
     });

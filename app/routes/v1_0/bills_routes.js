@@ -7,6 +7,9 @@ module.exports = function(app) {
   // app.get('/api/v1/bills', BillsCtrl.getAllBills);
   app.get('/api/v1/bills', isLoggedIn, BillsCtrl.getAllBills);
 
+  // app.get('/api/v1/bills', BillsCtrl.getAllBills);
+  app.get('/api/v1/bill/:id', BillsCtrl.getOneBill);
+
   // post one bill
   app.post('/api/v1/bill', getNewAddress, BillsCtrl.postBill);
 
