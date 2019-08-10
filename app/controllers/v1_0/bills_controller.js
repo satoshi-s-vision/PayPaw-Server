@@ -70,7 +70,6 @@ exports.getAllBills = function(req, res) {
     // OK
     helper.okResp(res, 200, 'ok', resData, rqq);
   }).catch( (err) => {
-    console.log(err);
     // Error
     helper.errResp(res, 404, 'Error: Can not get Bills!');
   });
@@ -85,15 +84,17 @@ exports.getAllBills = function(req, res) {
 exports.getOneBill = function(req, res) {
   const Bills = models.Bills;
 
-  let bill_id = req.query.id;
+  let bill_id = req.params.id;
 
-  // TODO - rate limit (DDOS)
+  if (!bill_id) {
+    helper.errResp(res, 400, 'Error: bad request, check your payload or URL!');
+    return
+  }
+
   Bills.findOne({
-    offset: rqq.offset,
-    limit: rqq.limit,
-    order: [
-      ['id', rqq.order],
-    ],
+    where: {
+      id: bill_id,
+    },
     attributes: [
       'id',
       'user_id',
@@ -110,24 +111,13 @@ exports.getOneBill = function(req, res) {
       [
         Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), bills.created_at))`),
         'bill_age'
-      ],
-      'User.recipient_name',
-      'User.recipient_wallet_address'
-    ],
-    where: {
-      user_id: req.user.id,
-    },
-    include: [{
-      model: models.User,
-      attributes: ['recipient_name', 'recipient_wallet_address'],
-    }],
+      ]
+    ]
   }).then( (resData) => {
     // OK
-    helper.okResp(res, 200, 'ok', resData, rqq);
+    helper.okResp(res, 200, 'ok', resData, { bill_id: bill_id });
   }).catch( (err) => {
-    console.log(err);
-    // Error
-    helper.errResp(res, 404, 'Error: Can not get Bills!');
+    helper.errResp(res, 404, 'Error: Can not get bill');
   });
 };
 
