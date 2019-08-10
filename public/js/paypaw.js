@@ -1,12 +1,15 @@
+const PAYPAW_BASE_URL = 'http://localhost:3000';
+
+
 // LIBRARY CLASS
 (window.initPayPaw = function() {
-  _loadPackage("http://localhost:3000/css/main-style.css", "css")
+  _loadPackage(`${PAYPAW_BASE_URL}/css/main-style.css`, "css")
   _loadPackage("https://code.jquery.com/jquery-3.3.1.slim.min.js", "js")
   _loadPackage("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js", "js")
   _loadPackage("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js", "js")
   _loadPackage("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css", "css")
+  _loadPackage("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css", "css")
 })();
-
 function PayPaw() {}
 
 // init
@@ -14,6 +17,8 @@ const payPaw = new PayPaw()
 
 PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
   let alreadyCalled = false;
+  let thisPaypaw = this;
+  const CHECKOUT_EXPIRATION_TIME_SEC = 10;
 
   this.tmp =
     `<div class="container-fluid paypaw-container">
@@ -100,7 +105,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
           "message": checkoutMessage
         }
       })
-      const requestURL = `http://localhost:3000/api/v1/bill`
+      const requestURL = `${PAYPAW_BASE_URL}/api/v1/bill`
       const res = await fetch(
         requestURL,
         {
@@ -113,10 +118,13 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
         }
       ).then(response => response.json());
 
-      if (res && res.meta && res.meta.code && res.meta.code == 201) {
+      if (responseValid(res, 201) && res.data) {
         console.log(res.data)
-        countDown(600);
+
+        countDown(CHECKOUT_EXPIRATION_TIME_SEC);
+        checkBillStatus(res.data.id);
         updateQR(res.data);
+
         $('#paypaw-checkout-address').text(res.data.address);
         $('#paypaw-checkout').show();
         alreadyCalled = true;
@@ -133,7 +141,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
     let countTime = t;
 
     // Update the count down every 1 second
-    let x = setInterval(function() {
+    thisPaypaw.count_down = setInterval(function() {
       let minutes = Math.floor(countTime / 60);
       let seconds = Math.floor(countTime % 60);
       countTime--;
@@ -141,10 +149,48 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
       if (seconds < 10) seconds = '0' + seconds;
       document.getElementById("countdown-timer").innerHTML = minutes + ":" + seconds;
       if (countTime < 0) {
-        clearInterval(x);
-        document.getElementById("paypaw-countdown").innerHTML = "Expired!";
+        clearInterval(thisPaypaw.count_down);
+        updateCountDownText("Expired!");
       }
     }, 1000);
+  }
+
+  async function checkBillStatus(id) {
+     // Check bill status every 2 second
+     thisPaypaw.check_bill = setInterval(async function() {
+
+      const requestURL = `${PAYPAW_BASE_URL}/api/v1/bill/${id}`
+      const res = await fetch(
+        requestURL,
+        {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json'
+          }
+        }
+      ).then(response => response.json());
+
+      if (responseValid(res, 200) && res.data && res.data.status == 1) {
+        console.log(res.data)
+
+        clearInterval(thisPaypaw.count_down);
+        clearInterval(thisPaypaw.check_bill);
+        checkoutSuccess();
+      }
+
+    }, 2000);
+  }
+
+  function responseValid(res, status) {
+    return res && res.meta && res.meta.code && res.meta.code == status;
+  }
+
+  function updateCountDownText(tx) {
+    document.getElementById("paypaw-countdown").innerHTML = tx;
+  }
+
+  function checkoutSuccess() {
+    document.getElementById("paypaw-countdown").innerHTML = 'Payment received';
   }
 
   function updateQR(data) {
@@ -157,6 +203,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
     qrcode.hidden = true;
     qrcode.makeCode(`bytom:${q_data.address}?amount=${q_data.amount}&asset=${q_data.asset}`); // make another code.
   }
+
 }
 
 function _loadPackage(filename, filetype){
