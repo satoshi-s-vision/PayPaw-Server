@@ -46,8 +46,12 @@ module.exports = function(app) {
 
       if (response && response.statusCode == 200) {
         // body.new_address
-        res.locals.newAddress = 'bm1qzrqd2ra5qh9xf7wsdk22c06dn9xkjjec0krp0p';
-        return next();
+
+        // TODO - remove, mock delay of a request
+        setTimeout(() => {
+          res.locals.newAddress = 'bm1qzrqd2ra5qh9xf7wsdk22c06dn9xkjjec0krp0p';
+          return next();
+        }, 2500);
       } else {
         // display error?
         helper.errResp(res, 400, 'Error: bad request, check your payload or URL!');
