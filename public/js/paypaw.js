@@ -18,12 +18,16 @@ const payPaw = new PayPaw()
 PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
   let alreadyCalled = false;
   let thisPaypaw = this;
-  const CHECKOUT_EXPIRATION_TIME_SEC = 10;
+  const CHECKOUT_EXPIRATION_TIME_SEC = 600;
 
   this.tmp =
     `<div class="container-fluid paypaw-container">
       <div id="pp-checkout" class="d-block">
         <button id="paypaw" type="button" class="btn"><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount/10**8} BTM</b></button>
+        <div id="paypaw-loading" style="padding: 30px; display: none;">
+          <i class="fas fa-dog" style="font-size: 100px;"></i>
+          <i class="fas fa-bone fa-spin" style="font-size: 50px;"></i>
+        </div>
         <div id="paypaw-checkout">
           <div class="btn" id="paypaw-countdown">
             <span id="countdown-timer"></span> Waiting for payment</div>
@@ -95,6 +99,8 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
     const checkoutAmount = b.currency_amount;
     const checkoutMessage = b.message;
 
+    loading(true);
+
     if (checkoutRecipientId && checkoutEmail && checkoutCurrency && checkoutAmount) {
       const data = JSON.stringify({
         "data": {
@@ -127,6 +133,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
 
         $('#paypaw-checkout-address').text(res.data.address);
         $('#paypaw-checkout').show();
+        loading(false);
         alreadyCalled = true;
       } else {
         alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
@@ -134,6 +141,11 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
     } else {
       alert('Input not valid, check your input');
     }
+  }
+
+  function loading(bool) {
+    if (bool) return $('#paypaw-loading').show()
+    $('#paypaw-loading').hide()
   }
 
   function countDown(t) {
