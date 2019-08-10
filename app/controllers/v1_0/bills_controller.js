@@ -85,13 +85,13 @@ exports.getAllBills = function(req, res) {
 exports.postBill = function(req, res) {
   const Bills = models.Bills;
 
-  if (req.body && req.body.data) {
+  if (req.body && req.body.data && res.locals.newAddress) {
 
     const bill = req.body.data
     const DEFAULT = {
       asset_id: 1,
       asset_amount: bill.currency_amount,
-      address: 'bm1qzrqd2ra5qh9xf7wsdk22c06dn9xkjjec0krp0p', // TODO call service to get a new address
+      address: res.locals.newAddress, // TODO call service to get a new address
       status: 0
     }
 
@@ -107,9 +107,7 @@ exports.postBill = function(req, res) {
       status: DEFAULT.status,
     }).then( (data) => {
       // OK, created
-      setTimeout(function () {
-        helper.okResp(res, 201, 'Created', data);
-      }, 500);
+      helper.okResp(res, 201, 'Created', data);
     }).catch( (err) => {
       console.log(err);
       // Error
