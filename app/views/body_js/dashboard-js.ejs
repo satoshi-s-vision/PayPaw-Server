@@ -1,6 +1,6 @@
 <script type="text/javascript">
 $(function() {
-  const AUTO_LOAD_INTERVAL = 2000;
+  const AUTO_LOAD_INTERVAL = 200000;
   let item_per_page = 10;
   let current_offset = 0;
   let current_page = 0;
@@ -9,6 +9,8 @@ $(function() {
 
   // run once for page load (init)
   autoLoadFn()
+  // init load user profile
+  getMyProfile()
 
   $('#bills-prev-page').on('click', loadPrevBillsPage)
   $('#bills-next-page').on('click', loadNextBillsPage)
@@ -182,6 +184,63 @@ $(function() {
       }, 500);
     } else {
       alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
+    }
+  };
+
+  async function getMyProfile() {
+    const res = await fetch(
+      `/api/v1/user/me`,
+      {
+        method: "GET"
+      }
+    ).then(response => response.json());
+
+    if (res && res.meta && res.meta.code == 200) {
+      let d = res.data;
+      console.log(res.data);
+
+      $('#welcome-user-name').text(`Welcome, ${d.first_name} ${d.last_name} 🐾 (ID: ${d.id})`);
+      $('#welcome-org-name').text(`🏦 ${d.recipient_name}`);
+      $('#nav-profile').html(`
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Recipient ID:</b></label>
+          <label class="col-sm-9 col-form-label">${d.id}</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Recipient name:</b></label>
+          <label class="col-sm-9 col-form-label">${d.recipient_name}</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Recipient wallet address:</b></label>
+          <label class="col-sm-9 col-form-label">${d.recipient_wallet_address}</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Full name:</b></label>
+          <label class="col-sm-9 col-form-label">${d.first_name} ${d.last_name}</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Email:</b></label>
+          <label class="col-sm-9 col-form-label">${d.email}</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Phone:</b></label>
+          <label class="col-sm-9 col-form-label">${d.recipient_name}</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Access token:</b></label>
+          <label class="col-sm-9 col-form-label">${d.recipient_name}</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Updated at:</b></label>
+          <label class="col-sm-9 col-form-label">${new Date(d.updated_at)}</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Created at:</b></label>
+          <label class="col-sm-9 col-form-label">${new Date(d.created_at)}</label>
+        </div>
+      `);
+    } else {
+      alert(`Error: Can't load profile. Status Code ${res.meta.code} : ${res.meta.msg}`);
     }
   };
 
