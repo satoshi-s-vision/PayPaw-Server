@@ -1,29 +1,47 @@
-<!-- Messages JavaScript -->
 <script type="text/javascript">
 $(function() {
-
-  let item_per_page = 5;
+  const AUTO_LOAD_INTERVAL = 2000;
+  let item_per_page = 10;
   let current_offset = 0;
   let current_page = 0;
 
-  // run once for page load (init)
-  loadBills(item_per_page, current_offset, current_page, 'DESC');
+  let autoLoad = setInterval(autoLoadFn, AUTO_LOAD_INTERVAL);
 
-  $('#bills-prev-page').on('click', function () {
+  // run once for page load (init)
+  autoLoadFn()
+
+  $('#bills-prev-page').on('click', loadPrevBillsPage)
+  $('#bills-next-page').on('click', loadNextBillsPage)
+  $('#autoUpdateSwitch').on('change', autoUpdateSwitchFn);
+
+  // ------------------ Functions -----------------
+  function autoUpdateSwitchFn () {
+    let checked = $(this).prop("checked");
+    if (checked) {
+      autoLoad = setInterval(autoLoadFn, AUTO_LOAD_INTERVAL);
+    } else {
+      clearInterval(autoLoad);
+    }
+  }
+
+  function autoLoadFn () {
+    loadBills(item_per_page, current_offset, current_page, 'DESC');
+  }
+
+  function loadPrevBillsPage () {
     if (current_page > 0) {
       current_page--;
       current_offset = item_per_page * current_page;
     }
     loadBills(item_per_page, current_offset, current_page, 'DESC');
-  })
+  }
 
-  $('#bills-next-page').on('click', function () {
+  function loadNextBillsPage () {
     current_page++;
     current_offset = item_per_page * current_page;
     loadBills(item_per_page, current_offset, current_page, 'DESC');
-  })
+  }
 
-  // ------------------ Functions -----------------
   function displayBills(bills) {
     let bills_html = '';
     bills.forEach(function(b) {
@@ -130,12 +148,12 @@ $(function() {
   }
 
   function updateBillsPageNum () {
-    $('#bills-page-number').text(`Page ${current_page + 1}`);
+    $('#bills-page-number').text(`${current_page + 1}`);
   }
 
   // ------------------ Ajax call -----------------
   /**
-   * Ajax, call server to get msg/msgs
+   * Ajax, call server to get bills
    */
   async function loadBills(
     limit = 20,
@@ -143,6 +161,8 @@ $(function() {
     curr_page = 0,
     order = 'DESC',
   ) {
+    $('#autoUpdateSpinner').show();
+
     const params = `order=${order}&limit=${limit}&offset=${offset}`
     const res = await fetch(
       `/api/v1/bills?${params}`,
@@ -157,6 +177,9 @@ $(function() {
 
       displayBills(res.data);
       updateBillsPageNum(curr_page);
+      setTimeout(() => {
+        $('#autoUpdateSpinner').hide();
+      }, 500);
     } else {
       alert(`Status Code ${res.meta.code} : ${res.meta.msg}`);
     }
