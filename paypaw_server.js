@@ -1,7 +1,7 @@
 'use strict';
 
 // DB etc...
-const config = require('./config/config.json');
+const config = require('./config/config-dev.json');
 
 const express = require('express');
 const session = require('express-session');

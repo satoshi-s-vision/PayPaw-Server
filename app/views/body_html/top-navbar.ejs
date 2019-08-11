@@ -1,39 +1,41 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-  <a class="navbar-brand" href="/">PayPaw Payments</a>
-  <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#mainNavbars" aria-controls="mainNavbars" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="navbar-collapse collapse" id="mainNavbars">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="/" id="page_home">Home</a>
-      </li>
-      <% if (user) { %>
-      <li class="nav-item">
-        <a class="nav-link" href="/dashboard" id="page_dashboard">My dashboard</a>
-      </li>
-      <% } %>
-    </ul>
-    <div class="form-inline pull-right">
-      <% if (user) { %>
-      <!-- if user logged in  -->
-      <script type="text/javascript">
-        if (typeof(Storage) !== "undefined") {
-          window.sessionStorage.setItem('restapi_user_id', <%= user.id %>);
-        }
-      </script>
-      <span class="form-inline" style="color: white;">Welcome!&nbsp;<a style="color: aqua;"><%= user.first_name %> <%= user.last_name %></a></span>
-      <a href="/logout" class="nav-link nav-login-signup"><i class="fas fa-sign-out-alt"></i></i> Logout</a>
-      <% } else { %>
-      <!-- user not logged in  -->
-      <script type="text/javascript">
-        if (typeof(Storage) !== "undefined") {
-          window.sessionStorage.removeItem('restapi_user_id');
-        }
-      </script>
-      <a href="/login" class="nav-link nav-login-signup"><i class="fas fa-sign-in-alt"></i>&nbsp;Login</a>
-      <a href="/signup" class="nav-link btn btn-outline-success nav-login-signup"><i class="fas fa-user-plus"></i>&nbsp;Sign Up</a>
-      <% } %>
+<nav class="navbar navbar-expand-md navbar-dark" style="background: black; padding-top: 0; padding-bottom: 0;">
+  <div class="container" style="padding: 0;">
+    <a class="navbar-brand"><img src="/img/paypaw-white.png" width="188" height="50"></a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#mainNavbars" aria-controls="mainNavbars" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse" id="mainNavbars">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/" id="page_home">Home</a>
+        </li>
+        <% if (user) { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/dashboard" id="page_dashboard">My dashboard</a>
+        </li>
+        <% } %>
+      </ul>
+      <div class="form-inline pull-right">
+        <% if (user) { %>
+        <!-- if user logged in  -->
+        <script type="text/javascript">
+          if (typeof(Storage) !== "undefined") {
+            window.sessionStorage.setItem('restapi_user_id', <%= user.id %>);
+          }
+        </script>
+        <span class="form-inline" style="color: white;">Welcome!&nbsp;<a style="color: aqua;"><%= user.first_name %> <%= user.last_name %></a></span>
+        <a href="/logout" class="nav-link nav-login-signup"><i class="fas fa-sign-out-alt"></i></i> Logout</a>
+        <% } else { %>
+        <!-- user not logged in  -->
+        <script type="text/javascript">
+          if (typeof(Storage) !== "undefined") {
+            window.sessionStorage.removeItem('restapi_user_id');
+          }
+        </script>
+        <a href="/login" class="nav-link nav-login-signup"><i class="fas fa-sign-in-alt"></i>&nbsp;Login</a>
+        <a href="/signup" class="nav-link btn btn-outline-success nav-login-signup"><i class="fas fa-user-plus"></i>&nbsp;Sign Up</a>
+        <% } %>
+      </div>
     </div>
   </div>
 </nav>
