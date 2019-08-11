@@ -11,8 +11,11 @@ module.exports = function(sequelize, DataTypes) {
     asset_amount: { type: DataTypes.DECIMAL(20,8), allowNull: false },
     message: { type: DataTypes.STRING(1024), allowNull: true },
     status: { type: DataTypes.INTEGER(1), allowNull: false },
+    created_at: { type: DataTypes.DATE },
+    updated_at: { type: DataTypes.DATE }
   }, {
-    charset: 'utf8mb4'
+    charset: 'utf8mb4',
+    timestamps: false
   });
 
   Bills.associate = function(models) {

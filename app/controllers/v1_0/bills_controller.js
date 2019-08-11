@@ -53,7 +53,7 @@ exports.getAllBills = function(req, res) {
       'message',
       'updated_at',
       [
-        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), bills.created_at))`),
+        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), Bills.created_at))`),
         'bill_age'
       ],
       'User.recipient_name',
@@ -109,7 +109,7 @@ exports.getOneBill = function(req, res) {
       'message',
       'updated_at',
       [
-        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), bills.created_at))`),
+        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), Bills.created_at))`),
         'bill_age'
       ]
     ]

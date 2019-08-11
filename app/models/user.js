@@ -9,9 +9,12 @@ module.exports = function(sequelize, DataTypes) {
     last_name: {type: DataTypes.STRING(64), allowNull: false},
     recipient_name: {type: DataTypes.STRING(64), allowNull: false},
     recipient_wallet_address: {type: DataTypes.STRING(64), allowNull: false},
-    phone: {type: DataTypes.STRING(64), allowNull: true}
+    phone: {type: DataTypes.STRING(64), allowNull: true},
+    created_at: { type: DataTypes.DATE },
+    updated_at: { type: DataTypes.DATE }
   }, {
-    charset: 'utf8mb4'
+    charset: 'utf8mb4',
+    timestamps: false
   })
 
   User.associate = function(models) {
