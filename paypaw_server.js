@@ -77,11 +77,15 @@ const models = require('./app/models');
  */
 // load passport strategies
 require('./app/config/passport/passport.js')(passport, models.User);
-
 require('./app/routes/auth_routes.js')(app, passport);
 
-// load messages API v1.0
+// API v1.0
 require('./app/routes/v1_0/bills_routes.js')(app);
+require('./app/routes/v1_0/user_routes.js')(app);
+
+app.get('/api/ping', (req, res) => {
+  return res.send('pong');
+});
 
 /**
  *  database
