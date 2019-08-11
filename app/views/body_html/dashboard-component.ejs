@@ -1,31 +1,48 @@
-<div class="container">
-  <hr>
+<div class="container margin-top-30">
 
-  <!-- <button type="button" class="btn btn-primary">
-    Pending Payments <span class="badge badge-light">125</span>
-  </button> -->
-
-  <div>
-    <div class="h2 row">Bills</div>
-
-    <div class="row">
-      <nav aria-label="Page navigation col">
-        <ul class="pagination">
-          <li class="page-item" id="bills-prev-page"><a class="page-link" href="#">Previous</a></li>
-          <li class="page-item active">
-            <span class="page-link">
-              Page <span class="badge badge-light" id="bills-page-number"></span>
-              <span class="sr-only">(current)</span>
-            </span>
-          </li>
-          <li class="page-item" id="bills-next-page"><a class="page-link" href="#">Next</a></li>
-        </ul>
-      </nav>
-      <div class="custom-control custom-switch col">
-        <input type="checkbox" class="custom-control-input float-right" id="autoUpdateSwitch" checked>
-        <label class="custom-control-label float-right" for="autoUpdateSwitch" style="width: 200px;">Updates automatically <i class="fas fa-spinner fa-pulse" id="autoUpdateSpinner"></i></label>
-      </div>
+  <nav class="reduce-margin-l-r">
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-bills-tab" data-toggle="tab" href="#nav-bills" role="tab" aria-controls="nav-bills" aria-selected="true">Bills</a>
+      <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">My Profile</a>
+      <a class="nav-item nav-link" id="nav-balance-tab" data-toggle="tab" href="#nav-balance" role="tab" aria-controls="nav-balance" aria-selected="false">Balance</a>
     </div>
-    <div id="bills-box" style="margin-left: -15px; margin-right: -15px;"></div>
+  </nav>
+
+  <div class="tab-content margin-top-30" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-bills" role="tabpanel" aria-labelledby="nav-bills-tab">
+      <div class="row">
+        <nav aria-label="Page navigation col">
+          <ul class="pagination">
+            <li class="page-item" id="bills-prev-page"><a class="page-link text-info" href="#">Previous</a></li>
+            <li class="page-item">
+              <span class="page-link text-muted">
+                Page <span class="badge badge-info" id="bills-page-number"></span>
+              </span>
+            </li>
+            <li class="page-item" id="bills-next-page"><a class="page-link text-info" href="#">Next</a></li>
+          </ul>
+        </nav>
+        <div class="custom-control custom-switch col">
+          <input type="checkbox" class="custom-control-input float-right" id="autoUpdateSwitch" checked>
+          <label class="custom-control-label float-right" for="autoUpdateSwitch" style="width: 200px;">Updates automatically <i class="fas fa-spinner fa-pulse" id="autoUpdateSpinner"></i></label>
+        </div>
+      </div>
+      <div id="bills-box" class="reduce-margin-l-r"></div>
+    </div>
+
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">123</div>
+
+    <div class="tab-pane fade" id="nav-balance" role="tabpanel" aria-labelledby="nav-balance-tab">12312</div>
   </div>
 </div>
+
+<style>
+.margin-top-30 {
+  margin-top: 30px;
+}
+
+.reduce-margin-l-r {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+</style>
