@@ -19,6 +19,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
   let alreadyCalled = false;
   let thisPaypaw = this;
   const CHECKOUT_EXPIRATION_TIME_SEC = 600;
+  const CHECK_BILL_INTERVAL = 2000;
 
   this.tmp =
     `<div class="container-fluid paypaw-container">
@@ -190,7 +191,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
         checkoutSuccess();
       }
 
-    }, 2000);
+    }, CHECK_BILL_INTERVAL);
   }
 
   function responseValid(res, status) {
