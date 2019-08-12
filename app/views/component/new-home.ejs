@@ -1,7 +1,25 @@
-<div class="container">
-  <div class="form-row">
+<div class="container" style="padding: 0;">
+  <div class="row">
+
+    <div id="paypawHeadline" class="col-md p1 d-flex align-items-center">
+      <div>
+        <h4 class="sub-title"><i>It is too easy.</i></h4>
+        <div class="headline-title">Fast and secure<br>BTM payments</div>
+        <br>
+        <div>PayPaw offers "Pay with BTM" solutions for you online/offline store.<br>Fast and secure without fee!</div>
+        <br>
+        <div>
+          <a class="btn btn-grad" href="/signup">Sign up now</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md p1 d-flex justify-content-center align-items-center">
+      <img src="/img/paypaw-ad.png" alt="" height="400">
+    </div>
+  </div>
+
+  <div id="paypawDemo" class="form-row">
     <div class="col-md">
-      <br>
       <h3><span style="color: green;"><i class="fas fa-money-check-alt"></i></span></i> Accept BTM online</h3>
       <hr>
       <form class="needs-validation" novalidate>
@@ -68,6 +86,43 @@
 .checkout-input-label {
   width: 110px;
 }
+.p1 {
+  min-height: 400px;
+}
+/* Home section 1 - headline */
+#paypawHeadline .headline-title {
+  font-size: 4rem;
+  line-height: 1;
+  font-weight: 700;
+  font-family: system-ui;
+}
+#paypawHeadline .sub-title {
+  color: dodgerblue;
+  font-weight: 700;
+}
+.btn-grad {
+  flex: 1 1 auto;
+  margin: 0px;
+  padding: 10px 35px;
+  text-align: center;
+  font-weight: 600;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  border-radius: 15px;
+
+  background-image: linear-gradient(to right, #4776E6 0%, #8E54E9 51%, #4776E6 100%);
+}
+.btn-grad:hover {
+  background-position: right center!important;
+}
+
+/* Home section 3 - Demo */
+#paypawDemo {
+  margin-top: 40px;
+}
+
+
 </style>
 
 <script src="/js/paypaw.js"></script>

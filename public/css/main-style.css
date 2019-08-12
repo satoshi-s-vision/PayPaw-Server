@@ -58,3 +58,7 @@
   width: 100%;
   border-radius: 0 0 15px 15px;
 }
+
+body {
+  background: linear-gradient(90deg, rgba(254,172,80,0.7) 0%, rgba(199,121,208,0.5) 50%, rgba(75,192,200,1) 100%)!important;
+}
