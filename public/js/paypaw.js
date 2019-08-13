@@ -210,7 +210,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
     // bytom:[address]?amount=[amount]&asset=[asset]
     const q_data = {
       address: data.address,
-      amount: data.asset_amount * 10**8,
+      amount: data.asset_amount,
       asset: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', // TODO - get it from database.
     }
     qrcode.hidden = true;
