@@ -76,7 +76,7 @@ const models = require('./app/models');
  *  routes
  */
 // load passport strategies
-require('./app/config/passport/passport.js')(passport, models.User);
+require('./app/config/passport/passport.js')(passport, models.user);
 require('./app/routes/auth_routes.js')(app, passport);
 
 // API v1.0

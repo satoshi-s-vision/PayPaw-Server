@@ -10,7 +10,7 @@ const helper = require('../../tools/helper_method');
  * @param {object} res The response
  */
 exports.getMe = function(req, res) {
-  const User = models.User;
+  const User = models.user;
 
   let user_id = req.user && req.user.id;
 

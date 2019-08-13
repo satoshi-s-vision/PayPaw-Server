@@ -11,7 +11,7 @@ const Sequelize = require('sequelize')
  * @param {object} res The response
  */
 exports.getAllBills = function(req, res) {
-  const Bills = models.Bills;
+  const Bills = models.bills;
 
   // Can easily add search param in the future
   // requested filter
@@ -63,7 +63,7 @@ exports.getAllBills = function(req, res) {
       user_id: req.user.id,
     },
     include: [{
-      model: models.User,
+      model: models.user,
       attributes: ['recipient_name', 'recipient_wallet_address'],
     }],
   }).then( (resData) => {
@@ -82,7 +82,7 @@ exports.getAllBills = function(req, res) {
  * @param {object} res The response
  */
 exports.getOneBill = function(req, res) {
-  const Bills = models.Bills;
+  const Bills = models.bills;
 
   let bill_id = req.params.id;
 
@@ -128,7 +128,7 @@ exports.getOneBill = function(req, res) {
  * @param {object} res The response
  */
 exports.postBill = function(req, res) {
-  const Bills = models.Bills;
+  const Bills = models.bills;
 
   function setBillAsPaid(bill_id) {
     Bills.update({
