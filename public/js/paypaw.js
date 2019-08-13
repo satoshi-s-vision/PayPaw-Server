@@ -1,6 +1,5 @@
 const PAYPAW_BASE_URL = 'http://localhost:3000';
 
-
 // LIBRARY CLASS
 (window.initPayPaw = function() {
   _loadPackage(`${PAYPAW_BASE_URL}/css/main-style.css`, "css")
@@ -19,7 +18,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
   let alreadyCalled = false;
   let thisPaypaw = this;
   const CHECKOUT_EXPIRATION_TIME_SEC = 600;
-  const CHECK_BILL_INTERVAL = 2000;
+  const CHECK_BILL_INTERVAL = 10000;
 
   this.tmp =
     `<div class="container-fluid paypaw-container">
@@ -125,8 +124,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
         }
       ).then(response => response.json());
 
-      if (responseValid(res, 201) && res.data) {
-        console.log(res.data)
+      if (responseValid(res, 200) && res.data) {
 
         countDown(CHECKOUT_EXPIRATION_TIME_SEC);
         checkBillStatus(res.data.id);
@@ -184,8 +182,6 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
       ).then(response => response.json());
 
       if (responseValid(res, 200) && res.data && res.data.status == 1) {
-        console.log(res.data)
-
         clearInterval(thisPaypaw.count_down);
         clearInterval(thisPaypaw.check_bill);
         checkoutSuccess();
@@ -218,18 +214,18 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
       asset: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', // TODO - get it from database.
     }
     qrcode.hidden = true;
-    qrcode.makeCode(`bytom:${q_data.address}?amount=${q_data.amount}&asset=${q_data.asset}`); // make another code.
+    qrcode.makeCode(`bytom:${q_data.address}?amount=${q_data.amount}&asset=${q_data.asset}`);
   }
 
 }
 
 function _loadPackage(filename, filetype){
-  if (filetype=="js"){ //if filename is a external JavaScript file
+  if (filetype=="js"){
     var fileref=document.createElement('script')
     fileref.setAttribute("type","text/javascript")
     fileref.setAttribute("src", filename)
   }
-  else if (filetype=="css"){ //if filename is an external CSS file
+  else if (filetype=="css"){
     var fileref=document.createElement("link")
     fileref.setAttribute("rel", "stylesheet")
     fileref.setAttribute("type", "text/css")

@@ -2,7 +2,8 @@
 
 const models = require('../../models');
 const helper = require('../../tools/helper_method');
-const Sequelize = require('sequelize')
+const Sequelize = require('sequelize');
+const request = require('request');
 
 /**
  * Get Bills (option: search terms)
@@ -13,9 +14,11 @@ const Sequelize = require('sequelize')
 exports.getAllBills = function(req, res) {
   const Bills = models.bills;
 
-  // Can easily add search param in the future
+  // Search param in the future
   // requested filter
+  // TODO - validation, check duplicate...
   const reqq = req.query || {};
+
   // applied filter
   const rqq = {};
 
@@ -53,11 +56,11 @@ exports.getAllBills = function(req, res) {
       'message',
       'updated_at',
       [
-        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), Bills.created_at))`),
+        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), bills.created_at))`),
         'bill_age'
       ],
-      'User.recipient_name',
-      'User.recipient_wallet_address'
+      'user.recipient_name',
+      'user.recipient_wallet_address'
     ],
     where: {
       user_id: req.user.id,
@@ -109,7 +112,7 @@ exports.getOneBill = function(req, res) {
       'message',
       'updated_at',
       [
-        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), Bills.created_at))`),
+        Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), bills.created_at))`),
         'bill_age'
       ]
     ]
@@ -130,43 +133,65 @@ exports.getOneBill = function(req, res) {
 exports.postBill = function(req, res) {
   const Bills = models.bills;
 
-  function setBillAsPaid(bill_id) {
-    Bills.update({
-      status: 1,
-    }, {
-      where: { id: bill_id }
+  function _getNewAddressReturnBill(bill_id, rs) {
+    // For testing - use google.com
+    // request('http://www.google.com', function (error, response, body) {
+    request(`0.0.0.0:8080/api/set-address/${bill_id}`, function (error, response, body) {
+      if (response && response.statusCode == 200) {
+        Bills.findOne({
+          where: {
+            id: bill_id,
+          },
+          attributes: [
+            'id',
+            'user_id',
+            'email',
+            'currency',
+            'currency_amount',
+            'address',
+            'asset_id',
+            'asset_amount',
+            'status',
+            'created_at',
+            'message',
+            'updated_at',
+            [
+              Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), bills.created_at))`),
+              'bill_age'
+            ]
+          ]
+        }).then( (resData) => {
+          // OK
+          helper.okResp(rs, 200, 'ok', resData, { bill_id: bill_id });
+        }).catch( (err) => {
+          helper.errResp(rs, 404, 'Error: Can not get bill');
+        });
+      } else {
+        // display error?
+        helper.errResp(rs, 400, 'Error: bad request, something goes wrong!');
+      }
     });
   }
 
-  if (req.body && req.body.data && res.locals.newAddress) {
-
+  if (req.body && req.body.data) {
     const bill = req.body.data
     const DEFAULT = {
       asset_id: 1,
-      asset_amount: bill.currency_amount,
-      address: res.locals.newAddress, // TODO call service to get a new address
+      asset_amount: bill.currency_amount * 10**8,
       status: 0
     }
-
     Bills.create({
       user_id: bill.user_id,
       email: bill.email,
       currency: bill.currency,
       currency_amount: bill.currency_amount,
       message: bill.message,
-      address: DEFAULT.address,
       asset_id: DEFAULT.asset_id,
       asset_amount: DEFAULT.asset_amount,
       status: DEFAULT.status,
     }).then( (data) => {
-      // OK, created
-      helper.okResp(res, 201, 'Created', data);
-
-      // TODO - remove - mock payment
-      setTimeout(function () {
-        setBillAsPaid(data.id);
-      }, 3000);
-
+      // OK, created, get new address and return
+      _getNewAddressReturnBill(data.id, res);
     }).catch( (err) => {
       // Error
       helper.errResp(res, 404, 'Error: Can not post your bill!');
