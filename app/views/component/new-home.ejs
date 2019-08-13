@@ -1,6 +1,5 @@
 <div class="container" style="padding: 0;">
   <div class="row">
-
     <div id="paypawHeadline" class="col-md p1 d-flex align-items-center">
       <div>
         <h4 class="sub-title"><i>It is too easy.</i></h4>
@@ -17,10 +16,57 @@
       <img src="/img/paypaw-ad.png" alt="" height="400">
     </div>
   </div>
+  <hr>
+
+  <div id="paypawSteps">
+    <nav class="">
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-s1-tab" data-toggle="tab" href="#nav-s1" role="tab" aria-controls="nav-s1" aria-selected="true">Step 1</a>
+        <a class="nav-item nav-link" id="nav-s2-tab" data-toggle="tab" href="#nav-s2" role="tab" aria-controls="nav-s2" aria-selected="false">Step 2</a>
+        <a class="nav-item nav-link" id="nav-s3-tab" data-toggle="tab" href="#nav-s3" role="tab" aria-controls="nav-s3" aria-selected="false">Step 3</a>
+      </div>
+    </nav>
+
+    <div class="tab-content margin-top-30" id="nav-tabContent">
+      <div class="demo-tab tab-pane fade show active" id="nav-s1" role="tabpanel" aria-labelledby="nav-s1-tab">
+        <div>Sign up to accept BTM payments</div>
+        <div>remember your Recipient ID (User ID)</div>
+      </div>
+
+      <div class="demo-tab tab-pane fade" id="nav-s2" role="tabpanel" aria-labelledby="nav-s2-tab">
+        <span class="h5">Add the following code to your site when checkout:</span>
+        <br>
+<pre style="color: white">
+    &lt;body&gt;
+      <span class="darkgray">&lt;!-- 1. Place the button somewhere in your HTML --&gt;</span>
+      &lt;div id='paypaw-btn'&gt;&lt;/div&gt;
+
+      <span class="darkgray">&lt;!-- 2. Add the PayPaw script --&gt;</span>
+      &lt;script src=&quot;https://paypaw.org/js/paypaw.js&quot;&gt;&lt;/script&gt;
+
+      <span class="darkgray">&lt;!-- 3. Render the button --&gt;</span>
+      &lt;script&gt;
+        payPaw.render({
+          &quot;user_id&quot;: 1,
+          &quot;email&quot;: &quot;1@1.com&quot;,
+          &quot;currency&quot;: &quot;BTM&quot;,
+          &quot;currency_amount&quot;: 1000,
+          &quot;message&quot;: &quot;hello&quot;
+        }, 'paypaw-btn');
+      &lt;/script&gt;
+    &lt;/body&gt;
+</pre>
+      </div>
+
+      <div class="demo-tab tab-pane fade" id="nav-s3" role="tabpanel" aria-labelledby="nav-s3-tab">
+        Call PayPaw API to check bill status (pending / paid)
+      </div>
+    </div>
+  </div>
 
   <div id="paypawDemo" class="form-row">
     <div class="col-md">
-      <h3><span style="color: green;"><i class="fas fa-money-check-alt"></i></span></i> Accept BTM online</h3>
+      <h3><span style="color: green;"><i class="fas fa-money-check-alt"></i></span></i> Accept BTM online, try it now!</h3>
       <hr>
       <form class="needs-validation" novalidate>
         <div class="input-group mb-3">
@@ -78,9 +124,15 @@
     <div class="col-md">
       <div id='paypaw-btn'></div>
     </div>
-    </div>
+  </div>
+
+  <div class="paypaw-footer d-flex flex-column justify-content-center align-items-center">
+    <div class="p-2"><b>PayPaw payment</b></div>
+    <div class="p-2">E-mail: paypaw.prg@gmail.com</div>
+    <div class="p-2" style="font-size: 12px;">Copyright 2019</div>
   </div>
 </div>
+
 
 <style>
 .checkout-input-label {
@@ -117,11 +169,46 @@
   background-position: right center!important;
 }
 
-/* Home section 3 - Demo */
-#paypawDemo {
-  margin-top: 40px;
+/* Section 2 - steps */
+#paypawSteps {
+  margin-top: 80px;
+}
+.demo-tab {
+  background: black;
+  color: lightgray;
+  border-radius: 0 0 15px 15px;
+  min-height: 200px;
+}
+#nav-tab > .active {
+  background: black;
+  color: white!important;
+  border: none;
+}
+#nav-tab {
+  border-radius: 15px 15px 0 0;
+  background: #424141;
+  border: none;
+}
+#nav-tab :first-child {
+  border-radius: 15px 0 0 0;
+}
+#nav-tab .nav-item {
+  color: gray;
+}
+.darkgray {
+  color: darkgray;
 }
 
+/* Home section 3 - Demo */
+#paypawDemo {
+  margin-top: 120px;
+}
+/* footer */
+.paypaw-footer {
+  margin-top: 100px;
+  padding: 15px;
+  line-height: 0.2;
+}
 
 </style>
 
