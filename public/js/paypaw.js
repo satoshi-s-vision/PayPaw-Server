@@ -18,7 +18,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
   let alreadyCalled = false;
   let thisPaypaw = this;
   const CHECKOUT_EXPIRATION_TIME_SEC = 600;
-  const CHECK_BILL_INTERVAL = 10000;
+  const CHECK_BILL_INTERVAL = 1000;
 
   this.tmp =
     `<div class="container-fluid paypaw-container">
