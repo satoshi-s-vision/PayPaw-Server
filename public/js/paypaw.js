@@ -8,6 +8,7 @@ const PAYPAW_BASE_URL = 'http://localhost:3000';
   _loadPackage("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js", "js")
   _loadPackage("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css", "css")
   _loadPackage("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css", "css")
+  _loadPackage("https://cdnjs.cloudflare.com/ajax/libs/font-awesome-animation/0.2.1/font-awesome-animation.min.css", "css")
 })();
 function PayPaw() {}
 
@@ -19,14 +20,13 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
   let thisPaypaw = this;
   const CHECKOUT_EXPIRATION_TIME_SEC = 600;
   const CHECK_BILL_INTERVAL = 1000;
-
   this.tmp =
     `<div class="container-fluid paypaw-container">
       <div id="pp-checkout" class="d-block">
-        <button id="paypaw" type="button" class="btn"><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount/10**8} BTM</b></button>
+        <button id="paypaw" type="button" class="btn"><span id="paypaw-logo">PayPaw</span>Pay <b>${b.currency_amount} BTM</b></button>
         <div id="paypaw-loading" style="padding: 30px; display: none;">
-          <i class="fas fa-dog" style="font-size: 100px;"></i>
-          <i class="fas fa-bone fa-spin" style="font-size: 50px;"></i>
+          <i class="fas fa-dog faa-horizontal animated" style="font-size: 100px;"></i>
+          <i class="fas fa-bone faa-shake animated" style="font-size: 50px;"></i>
         </div>
         <div id="paypaw-checkout">
           <div class="btn" id="paypaw-countdown">
@@ -38,6 +38,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
       </div>
     </div>`;
 
+  b.currency_amount = b.currency_amount * 10**8;
   document.getElementById(paypawBtn).innerHTML = this.tmp;
   document.getElementById("paypaw").addEventListener("click", postOneBill);
 
@@ -107,7 +108,7 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
           "user_id": checkoutRecipientId,
           "email": checkoutEmail,
           "currency": checkoutCurrency,
-          "currency_amount": checkoutAmount / 10**8,
+          "currency_amount": checkoutAmount,
           "message": checkoutMessage
         }
       })

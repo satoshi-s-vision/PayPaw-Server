@@ -5,7 +5,7 @@
         <h4 class="sub-title"><i>It is too easy.</i></h4>
         <div class="headline-title">Fast and secure<br>BTM payments</div>
         <br>
-        <div>PayPaw offers "Pay with BTM" solutions for you online/offline store.<br>Fast and secure without fee!</div>
+        <div class="paypaw-sub-text">PayPaw offers "Pay with BTM" solutions for you online/offline store.<br>Fast and secure without fee!</div>
         <br>
         <div>
           <a class="btn btn-grad" href="/signup">Sign up now</a>
@@ -19,43 +19,50 @@
   <hr>
 
   <div id="paypawSteps">
+    <h2>Accept BTM online</h2>
+    <p class="paypaw-sub-text">
+      The PayPaw "Pay with BTM" checkout button is easy to add to your web-app or online shop.<br>
+      Click checkout to generate a donation payment to PayPaw or to a known recipient with ID.
+    </p>
     <nav class="">
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-item nav-link active" id="nav-s1-tab" data-toggle="tab" href="#nav-s1" role="tab" aria-controls="nav-s1" aria-selected="true">Step 1</a>
-        <a class="nav-item nav-link" id="nav-s2-tab" data-toggle="tab" href="#nav-s2" role="tab" aria-controls="nav-s2" aria-selected="false">Step 2</a>
-        <a class="nav-item nav-link" id="nav-s3-tab" data-toggle="tab" href="#nav-s3" role="tab" aria-controls="nav-s3" aria-selected="false">Step 3</a>
+        <a class="nav-item nav-link active" id="nav-s1-tab" data-toggle="tab" href="#nav-s1" role="tab" aria-controls="nav-s1" aria-selected="true">1. Signup and Setup</a>
+        <a class="nav-item nav-link" id="nav-s2-tab" data-toggle="tab" href="#nav-s2" role="tab" aria-controls="nav-s2" aria-selected="false">2. Verify your payment</a>
+        <a class="nav-item nav-link" id="nav-s3-tab" data-toggle="tab" href="#nav-s3" role="tab" aria-controls="nav-s3" aria-selected="false">3</a>
       </div>
     </nav>
 
     <div class="tab-content margin-top-30" id="nav-tabContent">
       <div class="demo-tab tab-pane fade show active" id="nav-s1" role="tabpanel" aria-labelledby="nav-s1-tab">
-        <div>Sign up to accept BTM payments</div>
-        <div>remember your Recipient ID (User ID)</div>
+<pre><code class="html">
+  1. Sign up with your wallet address and become a recipient
+  2. Get your Recipient ID (User ID) from top menu Dashboard
+  3. Add and modify the following code to your web-app
+
+  &lt;body&gt;
+    &lt;!-- i. Place the button somewhere in your HTML --&gt;
+    &lt;div id='paypaw-btn'&gt;&lt;/div&gt;
+
+    &lt;!-- ii. Add the PayPaw script --&gt;
+    &lt;script src=&quot;https://paypaw.org/js/paypaw.js&quot;&gt;&lt;/script&gt;
+
+    &lt;!-- iii. Render the button --&gt;
+    &lt;script&gt;
+      payPaw.render({
+        &quot;user_id&quot;: 1,
+        &quot;email&quot;: &quot;paypaw.org@gmail.com&quot;,
+        &quot;currency&quot;: &quot;BTM&quot;,
+        &quot;currency_amount&quot;: 1000,
+        &quot;message&quot;: &quot;hello&quot;
+      }, 'paypaw-btn');
+    &lt;/script&gt;
+  &lt;/body&gt;
+</code>
+      </pre>
       </div>
 
       <div class="demo-tab tab-pane fade" id="nav-s2" role="tabpanel" aria-labelledby="nav-s2-tab">
-        <span class="h5">Add the following code to your site when checkout:</span>
-        <br>
-<pre style="color: white">
-    &lt;body&gt;
-      <span class="darkgray">&lt;!-- 1. Place the button somewhere in your HTML --&gt;</span>
-      &lt;div id='paypaw-btn'&gt;&lt;/div&gt;
 
-      <span class="darkgray">&lt;!-- 2. Add the PayPaw script --&gt;</span>
-      &lt;script src=&quot;https://paypaw.org/js/paypaw.js&quot;&gt;&lt;/script&gt;
-
-      <span class="darkgray">&lt;!-- 3. Render the button --&gt;</span>
-      &lt;script&gt;
-        payPaw.render({
-          &quot;user_id&quot;: 1,
-          &quot;email&quot;: &quot;1@1.com&quot;,
-          &quot;currency&quot;: &quot;BTM&quot;,
-          &quot;currency_amount&quot;: 1000,
-          &quot;message&quot;: &quot;hello&quot;
-        }, 'paypaw-btn');
-      &lt;/script&gt;
-    &lt;/body&gt;
-</pre>
       </div>
 
       <div class="demo-tab tab-pane fade" id="nav-s3" role="tabpanel" aria-labelledby="nav-s3-tab">
@@ -141,9 +148,13 @@
 .p1 {
   min-height: 400px;
 }
+.paypaw-sub-text {
+  color: #5f6365;
+}
+
 /* Home section 1 - headline */
 #paypawHeadline .headline-title {
-  font-size: 4rem;
+  font-size: 3.75rem;
   line-height: 1;
   font-weight: 700;
   font-family: system-ui;
@@ -174,13 +185,13 @@
   margin-top: 80px;
 }
 .demo-tab {
-  background: black;
+  background: #23241f;
   color: lightgray;
   border-radius: 0 0 15px 15px;
   min-height: 200px;
 }
 #nav-tab > .active {
-  background: black;
+  background: #23241f;
   color: white!important;
   border: none;
 }
@@ -215,6 +226,7 @@
 <script src="/js/paypaw.js"></script>
 <script type="text/javascript">
 $(function() {
+  hljs.initHighlightingOnLoad();
 
   window.addEventListener('load', function() {
     // Fetch all the forms we want to apply custom Bootstrap validation styles to

@@ -177,9 +177,10 @@ exports.postBill = function(req, res) {
     const bill = req.body.data
     const DEFAULT = {
       asset_id: 1,
-      asset_amount: bill.currency_amount * 10**8,
+      asset_amount: bill.currency_amount / 10**8,
       status: 0
     }
+
     Bills.create({
       user_id: bill.user_id,
       email: bill.email,
