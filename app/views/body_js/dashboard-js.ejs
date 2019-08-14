@@ -197,7 +197,6 @@ $(function() {
 
     if (res && res.meta && res.meta.code == 200) {
       let d = res.data;
-      console.log(d);
       $('#welcome-user-name').text(`Welcome, ${d.first_name} ${d.last_name} 🐾 (ID: ${d.id})`);
       $('#welcome-org-name').text(`🏦 ${d.recipient_name}`);
       $('#nav-profile').html(`
