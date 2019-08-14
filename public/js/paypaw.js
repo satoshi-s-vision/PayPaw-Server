@@ -15,7 +15,13 @@ function PayPaw() {}
 // init
 const payPaw = new PayPaw()
 
-PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
+PayPaw.prototype.render = function (
+  paypawObj = {},
+  paypawBtn = 'paypaw-btn'
+) {
+  let b = paypawObj.payment;
+  let afterPaymentCall = paypawObj.afterPayment;
+
   let alreadyCalled = false;
   let thisPaypaw = this;
   const CHECKOUT_EXPIRATION_TIME_SEC = 600;
@@ -204,7 +210,9 @@ PayPaw.prototype.render = function (b = {}, paypawBtn = 'paypaw-btn') {
       <div class="btn" id="paypaw-countdown" style="background-color: rgb(40, 167, 69);">Payment received</div>
       <div><i class="fas fa-check" style="font-size: 125px; color: #28a745;"></i></div>
       <div class="btn" style="background-color: rgb(40, 167, 69); border: none; pointer-events: none; width: 100%; border-radius: 0 0 15px 15px; color: white;">Thank you!</button>`;
+
     $("#paypaw-checkout").html(success_html);
+    afterPaymentCall();
   }
 
   function updateQR(data) {

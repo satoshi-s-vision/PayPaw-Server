@@ -36,7 +36,7 @@
       <div class="demo-tab tab-pane fade show active" id="nav-s1" role="tabpanel" aria-labelledby="nav-s1-tab">
 <pre><code class="html">
   1. Sign up with your wallet address and become a recipient
-  2. Get your Recipient ID (User ID) from top menu Dashboard
+  2. Get your Recipient ID (User ID) from Main menu -> Dashboard
   3. Add and modify the following code to your web-app
 
   &lt;body&gt;
@@ -52,7 +52,7 @@
         &quot;user_id&quot;: 1,
         &quot;email&quot;: &quot;paypaw.org@gmail.com&quot;,
         &quot;currency&quot;: &quot;BTM&quot;,
-        &quot;currency_amount&quot;: 1000,
+        &quot;currency_amount&quot;: 50,
         &quot;message&quot;: &quot;hello&quot;
       }, 'paypaw-btn');
     &lt;/script&gt;
@@ -62,7 +62,39 @@
       </div>
 
       <div class="demo-tab tab-pane fade" id="nav-s2" role="tabpanel" aria-labelledby="nav-s2-tab">
+<pre><code>
+  Call the paypaw API https://paypaw.org/api/v1/bill/<bill_id>
+  # Request URL: https://paypaw.org/api/v1/bill/30
+  # Request Method: GET
+  # Status Code: 200 OK
 
+  {
+    "meta": {
+      "error": false,
+      "code": 200,
+      "total": 1,
+      "applied_filter": {
+        "bill_id": 30
+      },
+      "msg": "ok"
+    },
+    "data": {
+      "id": 30,
+      "user_id": 1,
+      "email": "paypaw.org@gmail.com",
+      "currency": "BTM",
+      "currency_amount": 50,
+      "address": "vp1qdu9n76lnjtknnga27e6t4gcke5848rzx0erpdc",
+      "asset_id": 1,
+      "asset_amount": 5000000000,
+      "status": 0,
+      "created_at": "2019-08-14T01:00:30.000Z",
+      "message": "hello",
+      "updated_at": "2019-08-14T01:00:30.000Z",
+      "bill_age": 666
+    }
+  }
+</code></pre>
       </div>
 
       <div class="demo-tab tab-pane fade" id="nav-s3" role="tabpanel" aria-labelledby="nav-s3-tab">
@@ -73,14 +105,16 @@
 
   <div id="paypawDemo" class="form-row">
     <div class="col-md">
-      <h3><span style="color: green;"><i class="fas fa-money-check-alt"></i></span></i> Accept BTM online, try it now!</h3>
-      <hr>
+      <div>
+        <h3>1. Payment info <i class="fas fa-arrow-alt-circle-down faa-bounce animated-hover"></i> <span class="float-right">2. Checkout <i class="fas fa-arrow-alt-circle-right faa-horizontal animated-hover"></i></span></h3>
+        <!-- <h3 class="text-right"><span>2. Checkout <i class="fas fa-arrow-circle-right faa-horizontal animated"></i></span></h3> -->
+      </div>
       <form class="needs-validation" novalidate>
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text checkout-input-label">Email</span>
           </div>
-          <input type="email" class="form-control" id="checkoutEmail" placeholder="(Your email for invoice)" required>
+          <input type="email" class="form-control paypaw-input" id="checkoutEmail" placeholder="(Your email for invoice)" required>
           <div class="invalid-feedback">
             Please provide email.
           </div>
@@ -93,12 +127,10 @@
             <select class="custom-select" id="checkoutCurrency" required>
               <h6 class="dropdown-header">Crypto</h6>
               <option value="BTM" selected>BTM</option>
-              <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header">Fiat</h6>
-              <option value="USD">USD</option>
-              <option value="CAD">CAD</option>
-              <option value="CNY">CNY</option>
-              <option value="EUR">EUR</option>
+              <option value="USD" disabled>USD</option>
+              <option value="CAD" disabled>CAD</option>
+              <option value="CNY" disabled>CNY</option>
+              <option value="EUR" disabled>EUR</option>
             </select>
           </div>
         </div>
@@ -125,7 +157,7 @@
           <textarea class="form-control" id="checkoutMessage" rows="2"></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary float-right">Checkout</button>
+        <button type="submit" class="btn btn-grad float-right">Checkout</button>
       </form>
     </div>
     <div class="col-md">
@@ -214,6 +246,9 @@
 #paypawDemo {
   margin-top: 120px;
 }
+.paypaw-input {
+
+}
 /* footer */
 .paypaw-footer {
   margin-top: 100px;
@@ -238,16 +273,25 @@ $(function() {
           const checkoutRecipientId = $('#checkoutRecipientId').val();
           const checkoutEmail = $('#checkoutEmail').val();
           const checkoutCurrency = $('#checkoutCurrency').val();
-          const checkoutAmount = $('#checkoutAmount').val() * 10**8;
+          const checkoutAmount = $('#checkoutAmount').val();
           const checkoutMessage = $('#checkoutMessage').val();
 
           if (checkoutRecipientId && checkoutEmail && checkoutCurrency && checkoutAmount) {
             payPaw.render({
-              "user_id": checkoutRecipientId,
-              "email": checkoutEmail,
-              "currency": checkoutCurrency,
-              "currency_amount": checkoutAmount,
-              "message": checkoutMessage
+
+              payment: {
+                "user_id": checkoutRecipientId,
+                "email": checkoutEmail,
+                "currency": checkoutCurrency,
+                "currency_amount": checkoutAmount,
+                "message": checkoutMessage
+              },
+
+              afterPayment: function(data) {
+                // Your method here
+                alert('We did it!');
+              }
+
             }, 'paypaw-btn');
 
             resetForm();
