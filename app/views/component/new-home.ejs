@@ -22,24 +22,22 @@
     <h2>Accept BTM online</h2>
     <p class="paypaw-sub-text">
       The PayPaw "Pay with BTM" checkout button is easy to add to your web-app or online shop.<br>
-      Click checkout to generate a donation payment to PayPaw or to a known recipient with ID.
+      Click checkout to generate a payment for a known recipient with ID.
     </p>
     <nav class="">
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a class="nav-item nav-link active" id="nav-s1-tab" data-toggle="tab" href="#nav-s1" role="tab" aria-controls="nav-s1" aria-selected="true">1. Signup and Setup</a>
         <a class="nav-item nav-link" id="nav-s2-tab" data-toggle="tab" href="#nav-s2" role="tab" aria-controls="nav-s2" aria-selected="false">2. Verify your payment</a>
-        <a class="nav-item nav-link" id="nav-s3-tab" data-toggle="tab" href="#nav-s3" role="tab" aria-controls="nav-s3" aria-selected="false">3</a>
       </div>
     </nav>
 
     <div class="tab-content margin-top-30" id="nav-tabContent">
       <div class="demo-tab tab-pane fade show active" id="nav-s1" role="tabpanel" aria-labelledby="nav-s1-tab">
 <pre><code class="html">
-  1. Sign up with your wallet address and become a recipient
-  2. Get your Recipient ID (User ID) from Main menu -> Dashboard
-  3. Add and modify the following code to your web-app
+    1. Sign up with your BTM Vapor wallet address and become a recipient
+    2. Get your Recipient ID (User ID) from Main menu -> Dashboard
+    3. Add and modify the following code to your web-app
 
-  &lt;body&gt;
     &lt;!-- i. Place the button somewhere in your HTML --&gt;
     &lt;div id='paypaw-btn'&gt;&lt;/div&gt;
 
@@ -49,56 +47,66 @@
     &lt;!-- iii. Render the button --&gt;
     &lt;script&gt;
       payPaw.render({
-        &quot;user_id&quot;: 1,
-        &quot;email&quot;: &quot;paypaw.org@gmail.com&quot;,
-        &quot;currency&quot;: &quot;BTM&quot;,
-        &quot;currency_amount&quot;: 50,
-        &quot;message&quot;: &quot;hello&quot;
+
+        // Payment info
+        payment: {
+          &quot;user_id&quot;: 1,
+          &quot;email&quot;: &quot;paypaw.org@gmail.com&quot;,
+          &quot;currency&quot;: &quot;BTM&quot;,
+          &quot;currency_amount&quot;: 50,
+          &quot;message&quot;: &quot;hello paw&quot;
+        },
+
+        // Your callback method or API request here
+        afterPayment: function(data) {
+          alert('Payment received! Your callback method or API request here');
+          // payment data
+          console.log(data); // Check 2. Verify your payment
+        }
+
       }, 'paypaw-btn');
     &lt;/script&gt;
-  &lt;/body&gt;
 </code>
-      </pre>
+</pre>
       </div>
 
       <div class="demo-tab tab-pane fade" id="nav-s2" role="tabpanel" aria-labelledby="nav-s2-tab">
 <pre><code>
-  Call the paypaw API https://paypaw.org/api/v1/bill/<bill_id>
-  # Request URL: https://paypaw.org/api/v1/bill/30
-  # Request Method: GET
-  # Status Code: 200 OK
+    1. After the payment completed, you get the payment data from afterPayment
+    2. You can also call the paypaw API "https://paypaw.org/api/v1/bill/[bill_id]" anytime you want for payment data
+    3. 'data.status': 0 = pending payment, 1 = payment completed
+    # Request URL: https://paypaw.org/api/v1/bill/30
+    # Request Method: GET
+    # Status Code: 200 OK
 
-  {
-    "meta": {
-      "error": false,
-      "code": 200,
-      "total": 1,
-      "applied_filter": {
-        "bill_id": 30
+    {
+      "meta": {
+        "error": false,
+        "code": 200,
+        "total": 1,
+        "applied_filter": {
+          "bill_id": 30
+        },
+        "msg": "ok"
       },
-      "msg": "ok"
-    },
-    "data": {
-      "id": 30,
-      "user_id": 1,
-      "email": "paypaw.org@gmail.com",
-      "currency": "BTM",
-      "currency_amount": 50,
-      "address": "vp1qdu9n76lnjtknnga27e6t4gcke5848rzx0erpdc",
-      "asset_id": 1,
-      "asset_amount": 5000000000,
-      "status": 0,
-      "created_at": "2019-08-14T01:00:30.000Z",
-      "message": "hello",
-      "updated_at": "2019-08-14T01:00:30.000Z",
-      "bill_age": 666
+      "data": {
+        "id": 30,
+        "user_id": 1,
+        "email": "paypaw.org@gmail.com",
+        "currency": "BTM",
+        "currency_amount": 50,
+        "address": "vp1qdu9n76lnjtknnga27e6t4gcke5848rzx0erpdc",
+        "asset_id": 1,
+        "asset_amount": 5000000000,
+        "status": 1,
+        "created_at": "2019-08-14T01:00:30.000Z",
+        "message": "hello paw",
+        "updated_at": "2019-08-14T01:00:30.000Z",
+        "bill_age": 666
+      }
     }
-  }
-</code></pre>
-      </div>
-
-      <div class="demo-tab tab-pane fade" id="nav-s3" role="tabpanel" aria-labelledby="nav-s3-tab">
-        Call PayPaw API to check bill status (pending / paid)
+</code>
+</pre>
       </div>
     </div>
   </div>
@@ -287,9 +295,11 @@ $(function() {
                 "message": checkoutMessage
               },
 
+              // Your callback method or API request here
               afterPayment: function(data) {
-                // Your method here
-                alert('We did it!');
+                alert('Payment received! Your callback method or API request here');
+                // payment data
+                console.log(data);
               }
 
             }, 'paypaw-btn');

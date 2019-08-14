@@ -192,6 +192,7 @@ PayPaw.prototype.render = function (
         clearInterval(thisPaypaw.count_down);
         clearInterval(thisPaypaw.check_bill);
         checkoutSuccess();
+        afterPaymentCall(res.data);
       }
 
     }, CHECK_BILL_INTERVAL);
@@ -212,7 +213,6 @@ PayPaw.prototype.render = function (
       <div class="btn" style="background-color: rgb(40, 167, 69); border: none; pointer-events: none; width: 100%; border-radius: 0 0 15px 15px; color: white;">Thank you!</button>`;
 
     $("#paypaw-checkout").html(success_html);
-    afterPaymentCall();
   }
 
   function updateQR(data) {
