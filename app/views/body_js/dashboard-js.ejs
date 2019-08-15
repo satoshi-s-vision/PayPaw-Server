@@ -11,6 +11,8 @@ $(function() {
   autoLoadFn()
   // init load user profile
   getMyProfile()
+  // get balance
+  getMyBalance()
 
   $('#bills-prev-page').on('click', loadPrevBillsPage)
   $('#bills-next-page').on('click', loadNextBillsPage)
@@ -242,7 +244,7 @@ $(function() {
     }
   };
 
-  async function getMyProfile() {
+  async function getMyBalance() {
     const res = await fetch(
       `/api/v1/balance`,
       {
