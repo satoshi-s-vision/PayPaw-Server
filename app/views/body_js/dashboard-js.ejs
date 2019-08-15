@@ -242,5 +242,31 @@ $(function() {
     }
   };
 
+  async function getMyProfile() {
+    const res = await fetch(
+      `/api/v1/balance`,
+      {
+        method: "GET"
+      }
+    ).then(response => response.json());
+
+    if (res && res.meta && res.meta.code == 200) {
+      let balance = res.data;
+      $('#nav-balance').html(`
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>Your balance:</b></label>
+          <label class="col-sm-9 col-form-label">${balance} BTM</label>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label"><b>(Feature coming soon):</b></label>
+          <label class="col-sm-9 col-form-label"><button class="btn btn-info" disabled>Payout balance</button></label>
+        </div>
+      `);
+    } else {
+      alert(`Error: Can't load balance. Status Code ${res.meta.code} : ${res.meta.msg}`);
+    }
+  };
+
+
 });
 </script>
