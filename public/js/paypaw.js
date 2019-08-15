@@ -115,7 +115,7 @@ PayPaw.prototype.render = function (
           "message": checkoutMessage
         }
       })
-      const requestURL = `${PAYPAW_BASE_URL}/api/v1/bill`
+      const requestURL = `https://paypaw.org/api/v1/bill`
       const res = await fetch(
         requestURL,
         {
@@ -174,7 +174,7 @@ PayPaw.prototype.render = function (
      // Check bill status every 2 second
      thisPaypaw.check_bill = setInterval(async function() {
 
-      const requestURL = `${PAYPAW_BASE_URL}/api/v1/bill/${id}`
+      const requestURL = `https://paypaw.org/api/v1/bill/${id}`
       const res = await fetch(
         requestURL,
         {
