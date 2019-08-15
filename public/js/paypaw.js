@@ -1,8 +1,5 @@
-const PAYPAW_BASE_URL = 'http://localhost:3000';
-
-// LIBRARY CLASS
 (window.initPayPaw = function() {
-  _loadPackage(`${PAYPAW_BASE_URL}/css/main-style.css`, "css")
+  _loadPackage(`https://paypaw.org/css/main-style.css`, "css")
   _loadPackage("https://code.jquery.com/jquery-3.3.1.slim.min.js", "js")
   _loadPackage("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js", "js")
   _loadPackage("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js", "js")
