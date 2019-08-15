@@ -135,8 +135,8 @@ exports.postBill = function(req, res) {
 
   function _getNewAddressReturnBill(bill_id, rs) {
     // For testing - use google.com
-    // request('http://www.google.com', function (error, response, body) {
-    request(`http://0.0.0.0:8080/api/set-address/${bill_id}`, function (error, response, body) {
+    request('http://www.google.com', function (error, response, body) {
+    // request(`http://0.0.0.0:8080/api/set-address/${bill_id}`, function (error, response, body) {
       if (response && response.statusCode == 200) {
         Bills.findOne({
           where: {
@@ -201,4 +201,33 @@ exports.postBill = function(req, res) {
     helper.errResp(res, 400,
       'Error: bad request, check your payload or URL!');
   }
+};
+
+/**
+ * Get user balance
+ *
+ * @param {object} req The request
+ * @param {object} res The response
+ */
+exports.getBalance = function(req, res) {
+  const Bills = models.bills;
+
+  let user_id = req.user.id;
+
+  if (!user_id) {
+    helper.errResp(res, 400, 'Error: bad request, check your payload or URL!');
+    return
+  }
+
+  Bills.sum('currency_amount', {
+    where: {
+      user_id: user_id,
+      status: 1
+    }
+  }).then(function(sum) {
+    helper.okResp(res, 200, 'ok', sum, { user_id: user_id });
+  }).catch( (err) => {
+    helper.errResp(res, 404, 'Error: Can not get bill');
+  });
+
 };

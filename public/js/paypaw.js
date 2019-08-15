@@ -171,9 +171,11 @@ PayPaw.prototype.render = function (
   }
 
   async function checkBillStatus(id) {
+    let countTime = CHECKOUT_EXPIRATION_TIME_SEC * 1000;
+
      // Check bill status every 2 second
      thisPaypaw.check_bill = setInterval(async function() {
-
+      countTime -= CHECK_BILL_INTERVAL;
       const requestURL = `https://paypaw.org/api/v1/bill/${id}`
       const res = await fetch(
         requestURL,
@@ -184,6 +186,11 @@ PayPaw.prototype.render = function (
           }
         }
       ).then(response => response.json());
+
+      if (countTime < 0) {
+        clearInterval(thisPaypaw.check_bill);
+        return
+      }
 
       if (responseValid(res, 200) && res.data && res.data.status == 1) {
         clearInterval(thisPaypaw.count_down);

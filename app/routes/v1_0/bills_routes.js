@@ -11,6 +11,9 @@ module.exports = function(app) {
   // post one bill
   app.post('/api/v1/bill', BillsCtrl.postBill);
 
+  // get balance
+  app.get('/api/v1/balance', isLoggedIn, BillsCtrl.getBalance);
+
   /**
    * Check if user logged in.
    * @param {obj} req Request
