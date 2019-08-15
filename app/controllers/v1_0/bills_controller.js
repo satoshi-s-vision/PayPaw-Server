@@ -135,8 +135,8 @@ exports.postBill = function(req, res) {
 
   function _getNewAddressReturnBill(bill_id, rs) {
     // For testing - use google.com
-    request('http://www.google.com', function (error, response, body) {
-    // request(`http://0.0.0.0:8080/api/set-address/${bill_id}`, function (error, response, body) {
+    // request('http://www.google.com', function (error, response, body) {
+    request(`http://0.0.0.0:8080/api/set-address/${bill_id}`, function (error, response, body) {
       if (response && response.statusCode == 200) {
         Bills.findOne({
           where: {
