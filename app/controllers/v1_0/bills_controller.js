@@ -48,7 +48,7 @@ exports.getAllBills = function(req, res) {
       'email',
       'currency',
       'currency_amount',
-      'address',
+      // 'address',
       'asset_id',
       'asset_amount',
       'status',
@@ -59,16 +59,16 @@ exports.getAllBills = function(req, res) {
         Sequelize.literal(`TIME_TO_SEC(TIMEDIFF(NOW(), bills.created_at))`),
         'bill_age'
       ],
-      'user.recipient_name',
-      'user.recipient_wallet_address'
+      // 'user.recipient_name',
+      // 'user.recipient_wallet_address'
     ],
     where: {
       user_id: req.user.id,
     },
-    include: [{
-      model: models.user,
-      attributes: ['recipient_name', 'recipient_wallet_address'],
-    }],
+    // include: [{
+    //   model: models.user,
+    //   attributes: ['recipient_name', 'recipient_wallet_address'],
+    // }],
   }).then( (resData) => {
     // OK
     helper.okResp(res, 200, 'ok', resData, rqq);
@@ -104,7 +104,7 @@ exports.getOneBill = function(req, res) {
       'email',
       'currency',
       'currency_amount',
-      'address',
+      // 'address',
       'asset_id',
       'asset_amount',
       'status',
